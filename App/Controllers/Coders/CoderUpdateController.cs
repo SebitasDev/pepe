@@ -20,7 +20,7 @@ namespace RiwiTalent.App.Controllers.Coders
         {
             if(coder == null)
             {
-                return BadRequest("Invalida coder data or Id");
+                return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
             }
 
             try
