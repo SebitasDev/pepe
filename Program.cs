@@ -1,4 +1,10 @@
+using System.Net;
+using System.Text;
+using backend.Services.Interface;
+using backend.Services.Repository;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Services.Repository;
@@ -19,6 +25,42 @@ builder.Services.AddSingleton<MongoDbContext>();
 
 //Services to Interface and Repository
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+
+//Configuration JWT with environment variables
+builder.Services.AddAuthentication(option => {
+            option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+        .AddJwtBearer(configure => {
+            configure.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = Environment.GetEnvironmentVariable("Key"),
+                ValidAudience = Environment.GetEnvironmentVariable("Audience"),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF32.GetBytes(Environment.GetEnvironmentVariable("Issuer")))
+            };
+            /* Control de errores del token */
+            configure.Events = new JwtBearerEvents
+            {
+                OnAuthenticationFailed = context =>
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    if(context.Exception is SecurityTokenExpiredException)
+                    {
+                        Console.WriteLine("Token expirado, porfavor genere uno nuevo.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Usuario no autorizado.");
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        });
 
 var app = builder.Build();
 
