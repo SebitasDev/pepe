@@ -1,12 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using RiwiTalent.Services.Interface;
 
-namespace RiwiTalent.App.Controllers
+namespace MongoDb.App.Controllers
 {
-    public class CodersController
+    public class CodersController : Controller
     {
-        
+        private readonly ICoderRepository _coderRepository;
+        public CodersController(ICoderRepository coderRepository)
+        {
+            _coderRepository = coderRepository;
+        }
+
+        //endpoint
+        [HttpGet]
+        [Route("RiwiTalent/CoderList")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _coderRepository.GetCoders());
+        }
     }
 }
