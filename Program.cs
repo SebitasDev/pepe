@@ -19,6 +19,7 @@ builder.Services.AddSingleton<MongoDbContext>();
 
 //Services to Interface and Repository
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
+builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 
 var app = builder.Build();
 
