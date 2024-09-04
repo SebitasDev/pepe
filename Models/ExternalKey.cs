@@ -1,10 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MongoDB.Bson;
-
-namespace MongoDb.Models
+namespace RiwiTalent.Models
 {
     public class ExternalKey
     {

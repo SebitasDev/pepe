@@ -1,6 +1,6 @@
-using MongoDb.Models;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
+using RiwiTalent.Models;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.Services.Repository

@@ -1,8 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using RiwiTalent.Models;
 
-namespace MongoDb.Models
+namespace RiwiTalent.Models
 {
     public class Coder
     {

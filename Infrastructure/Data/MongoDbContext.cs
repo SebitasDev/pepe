@@ -1,7 +1,6 @@
 using RiwiTalent.Models;
 using MongoDB.Driver;
 using System.Text.RegularExpressions;
-using MongoDb.Models;
 
 namespace RiwiTalent.Infrastructure.Data
 {
