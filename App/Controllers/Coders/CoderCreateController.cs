@@ -11,6 +11,7 @@ namespace RiwiTalent.App.Controllers.Coders
     public class CoderCreateController : Controller
     {
         private readonly ICoderRepository _coderRepository;
+        public string Error = "Server Error: The request has not been resolve";
         public CoderCreateController(ICoderRepository coderRepository)
         {
             _coderRepository = coderRepository;
@@ -24,7 +25,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
             if(!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
             }
 
             try
@@ -32,11 +33,11 @@ namespace RiwiTalent.App.Controllers.Coders
                 _coderRepository.add(coder);
                 return Ok("The coder has been created successfully");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                
-                throw new Exception("The coder has not been created", ex);
+                throw new Exception(Error);
             }
         }
+
     }
 }
