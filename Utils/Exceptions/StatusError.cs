@@ -1,24 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RiwiTalent.Utils.Exceptions
 {
     public class StatusError
     {
-        //404
-        public static ProblemDetails CreateNotFound()
-        {
-            return new ProblemDetails
-            {
-                Title = "Error 404 - Not Found",
-                Status = StatusCodes.Status404NotFound,
-                Detail = "The content you are trying to access is not available. Please check the URL to ensure it is correct."
-            };
-        }
-
         //400
         public static ProblemDetails CreateBadRequest()
         {
@@ -30,6 +15,27 @@ namespace RiwiTalent.Utils.Exceptions
             };
         }
 
+        //401
+        public static ProblemDetails CreateUnauthorized()
+        {
+            return new ProblemDetails
+            {
+                Title = "Error 401 - Unauthorized",
+                Status = StatusCodes.Status401Unauthorized,
+                Detail = "The request requires valid authentication credentials. Please ensure that your authentication token is provided and valid, or re-authenticate to access the requested resource."
+            };
+        }
+
+        //404
+        public static ProblemDetails CreateNotFound()
+        {
+            return new ProblemDetails
+            {
+                Title = "Error 404 - Not Found",
+                Status = StatusCodes.Status404NotFound,
+                Detail = "The content you are trying to access is not available. Please check the URL to ensure it is correct."
+            };
+        }
 
         //500
         public static ProblemDetails CreateInternalServerError()
