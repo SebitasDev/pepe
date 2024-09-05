@@ -1,3 +1,4 @@
+using System.Reflection;
 using DotNetEnv;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Services.Interface;
@@ -11,6 +12,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
+//AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 //DotNetEnv
 Env.Load();
 
@@ -19,6 +23,7 @@ builder.Services.AddSingleton<MongoDbContext>();
 
 //Services to Interface and Repository
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
+builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 
 var app = builder.Build();
 

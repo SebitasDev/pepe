@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MongoDb.Models;
+using RiwiTalent.Models;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Coders

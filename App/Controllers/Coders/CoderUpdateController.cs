@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MongoDb.Models;
+using RiwiTalent.Models;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Coders
