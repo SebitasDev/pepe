@@ -15,12 +15,41 @@ namespace RiwiTalent.Services.Repository
 
         public void add(Coder coder)
         {
+            //we create a coder
             _mongoCollection.InsertOne(coder);
 
         }
 
+        public async Task<Coder> GetCoderId(string id)
+        {
+            //In this section we get coders by id and we do a control of errors.
+            try
+            {
+                return await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
+            }
+        }
+
+        public async Task<Coder> GetCoderName(string name)
+        {
+            //In this section we get coders by name and we do a control of errors.
+            try
+            {
+                return await _mongoCollection.Find(Coders => Coders.FirstName == name).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                
+                throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
+            }
+        }
+
         public async Task<IEnumerable<Coder>> GetCoders()
         {
+            //we get all coders
             var coder = await _mongoCollection.Find(_ => true).ToListAsync();
             return coder;
         }
