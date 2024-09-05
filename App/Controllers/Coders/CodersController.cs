@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using RiwiTalent.Services.Interface;
 
-namespace MongoDb.App.Controllers
+namespace RiwiTalent.App.Controllers
 {
     public class CodersController : Controller
     {

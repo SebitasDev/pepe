@@ -1,7 +1,6 @@
 using RiwiTalent.Models;
 using MongoDB.Driver;
 using System.Text.RegularExpressions;
-using MongoDb.Models;
 
 namespace RiwiTalent.Infrastructure.Data
 {
@@ -15,9 +14,8 @@ namespace RiwiTalent.Infrastructure.Data
             _database = client.GetDatabase(configuration["MongoDbSettings:Database"]);
         }
 
-        //We define connection to Models    
+        //We define connection to Models
         public IMongoCollection<Coder> Coders => _database.GetCollection<Coder>("Coders");
-        public IMongoCollection<GruopCoder> GroupCoders => _database.GetCollection<GruopCoder>("GroupCoders");
+        public IMongoCollection<GroupCoder> GroupCoders => _database.GetCollection<GroupCoder>("GroupCoders");
         public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
     }
-}

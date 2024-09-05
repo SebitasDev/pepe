@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
 
-namespace MongoDb.Models
+namespace RiwiTalent.Models
 {
-    public class GruopCoder
+    public class GroupCoder
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]

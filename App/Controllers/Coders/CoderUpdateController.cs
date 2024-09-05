@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using MongoDb.Models;
+using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Coders
@@ -16,16 +17,16 @@ namespace RiwiTalent.App.Controllers.Coders
         //Endpoint
         [HttpPut]
         [Route("RiwiTalent/UpdateCoder")]
-        public async Task<IActionResult> UpdateCoder(Coder coder)
+        public async Task<IActionResult> UpdateCoder(CoderDto coderDto)
         {
-            if(coder == null)
+            if(coderDto == null)
             {
                 return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
             }
 
             try
             {
-                await _coderRepository.Update(coder);
+                await _coderRepository.Update(coderDto);
                 return Ok("The coder has been updated the correct way");
             }
             catch (Exception)
