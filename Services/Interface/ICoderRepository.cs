@@ -1,9 +1,10 @@
+<<<<<<< feature/actualizar-coders
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MongoDb.Models;
 using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
 
 namespace RiwiTalent.Services.Interface
 {
@@ -11,6 +12,8 @@ namespace RiwiTalent.Services.Interface
     {
         Task<IEnumerable<Coder>> GetCoders(); //we get the all coders
         void add(Coder coder);
-        Task Update(Coder coder);//we Update a specific coder
+        Task Update(CoderDto coderDto);//we Update a specific coder
+        Task<Coder> GetCoderId(string id); //we get a specific coder by id
+        Task<Coder> GetCoderName(string name); //we get a specific coder by Name
+        void add(Coder coder);//we create a coder
     }
-}

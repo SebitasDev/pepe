@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using RiwiTalent.Models;
 
-namespace RiwiTalent.Services.Interface
+namespace backend.Services.Interface
 {
-    public interface IUserRepository
+    public interface ITokenRepository
     {
-        Task<IEnumerable<User>> GetUsers();
+        string GetToken(User user);
     }
 }
