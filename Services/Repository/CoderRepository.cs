@@ -96,3 +96,4 @@ namespace RiwiTalent.Services.Repository
         
         }
     }
+}

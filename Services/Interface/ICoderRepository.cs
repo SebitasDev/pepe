@@ -1,4 +1,3 @@
-<<<<<<< feature/actualizar-coders
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,9 +10,9 @@ namespace RiwiTalent.Services.Interface
     public interface ICoderRepository
     {
         Task<IEnumerable<Coder>> GetCoders(); //we get the all coders
-        void add(Coder coder);
         Task Update(CoderDto coderDto);//we Update a specific coder
         Task<Coder> GetCoderId(string id); //we get a specific coder by id
         Task<Coder> GetCoderName(string name); //we get a specific coder by Name
         void add(Coder coder);//we create a coder
     }
+}
