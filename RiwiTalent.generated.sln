@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
@@ -23,3 +24,30 @@ Global
 		SolutionGuid = {947672B3-2024-4F9D-AADF-14322B5E810A}
 	EndGlobalSection
 EndGlobal
+=======
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiwiTalent", "RiwiTalent.csproj", "{6E306E5C-C987-4F75-9B61-2F255E0A811E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E306E5C-C987-4F75-9B61-2F255E0A811E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E306E5C-C987-4F75-9B61-2F255E0A811E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E306E5C-C987-4F75-9B61-2F255E0A811E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E306E5C-C987-4F75-9B61-2F255E0A811E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {947672B3-2024-4F9D-AADF-14322B5E810A}
+	EndGlobalSection
+EndGlobal
+>>>>>>> e66dee7 (feat: desarrollo logica de soft-delete-coders)

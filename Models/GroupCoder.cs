@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+=======
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
+>>>>>>> e66dee7 (feat: desarrollo logica de soft-delete-coders)
 
-namespace RiwiTalent.Models
+namespace MongoDb.Models
 {
-    public class GroupCoder
+    public class GruopCoder
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
