@@ -1,3 +1,4 @@
+using System.Reflection;
 using DotNetEnv;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Services.Interface;
@@ -10,6 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+
+//AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //DotNetEnv
 Env.Load();

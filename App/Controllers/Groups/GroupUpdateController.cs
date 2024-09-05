@@ -6,22 +6,26 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
+using AutoMapper;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
     public class GroupUpdateController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
+        private readonly IMapper _mapper;
         public string Error = "Server Error: The request has not been resolve";
-        public GroupUpdateController(IGroupCoderRepository groupRepository)
+        public GroupUpdateController(IGroupCoderRepository groupRepository, IMapper mapper)
         {
             _groupRepository = groupRepository;
+            _mapper = mapper;
         }
 
         //Endpoint
         [HttpPut]
         [Route("RiwiTalent/UpdateGroups")]
-        public async Task<IActionResult> UpdateGroups(GruopCoder gruopCoder)
+        public async Task<IActionResult> UpdateGroups([FromBody] GroupCoderDto groupCoderDto)
         {
             if(!ModelState.IsValid)
             {
@@ -30,7 +34,7 @@ namespace RiwiTalent.App.Controllers.Groups
             
             try
             {
-                await _groupRepository.Update(gruopCoder);
+                await _groupRepository.Update(groupCoderDto);
                 return Ok("The Group has been updated the correct way");
             }
             catch (Exception ex)

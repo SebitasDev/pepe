@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace RiwiTalent.Models
 {
-    public class GruopCoder
+    public class GroupCoder
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
