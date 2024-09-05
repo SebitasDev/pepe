@@ -19,4 +19,3 @@ namespace RiwiTalent.Infrastructure.Data
         public IMongoCollection<GroupCoder> GroupCoders => _database.GetCollection<GroupCoder>("GroupCoders");
         public IMongoCollection<User> Users => _database.GetCollection<User>("Users");
     }
-}
