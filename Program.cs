@@ -25,7 +25,12 @@ builder.Services.AddSingleton<MongoDbContext>();
 
 //Services to Interface and Repository
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
+builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+
+
+//Mapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //Configuration JWT with environment variables
 builder.Services.AddAuthentication(option => {

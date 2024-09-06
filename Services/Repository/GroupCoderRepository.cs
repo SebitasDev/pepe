@@ -9,7 +9,7 @@ namespace RiwiTalent.Services.Repository
 {
     public class GroupCoderRepository : IGroupCoderRepository
     {
-        private readonly IMongoCollection<GroupCoder> _mongoCollection;
+        private readonly IMongoCollection<GruopCoder> _mongoCollection;
         private readonly IMapper _mapper;
 
         private string Error = "The group not found";
@@ -18,12 +18,12 @@ namespace RiwiTalent.Services.Repository
             _mongoCollection = context.GroupCoders;
             _mapper = mapper;
         }
-        public void add(GroupCoder groupCoder)
+        public void add(GruopCoder groupCoder)
         {
             _mongoCollection.InsertOne(groupCoder);
         }
 
-        public async Task<IEnumerable<GroupCoder>> GetGroupCoders()
+        public async Task<IEnumerable<GruopCoder>> GetGroupCoders()
         {
             var Groups = await _mongoCollection.Find(_ => true).ToListAsync();
             return Groups;
@@ -43,7 +43,7 @@ namespace RiwiTalent.Services.Repository
             }
 
             var groupCoder = _mapper.Map(groupCoderDto, existGroup);
-            var builder = Builders<GroupCoder>.Filter;
+            var builder = Builders<GruopCoder>.Filter;
             var filter = builder.Eq(group => group.Id, groupCoder.Id );
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoder);

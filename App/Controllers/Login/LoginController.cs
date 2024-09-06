@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using backend.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
-using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
 
 namespace backend.App.Controllers.Login
 {
@@ -23,21 +17,21 @@ namespace backend.App.Controllers.Login
         }
 
         [HttpPost("riwitalent/login")]
-        public async Task<IActionResult> Login([FromBody] User user)
+        public async Task<IActionResult> Login([FromBody] TokenResponseDto tokenResponseDto)
         {
-            var users = await _context.Users.Find(u => u.Email == user.Email).FirstOrDefaultAsync();
+            var users = await _context.Users.Find(u => u.Email == tokenResponseDto.Email).FirstOrDefaultAsync();
 
             if (users == null)
             {
                 return NotFound("Usuario o contraseña incorrectos.");
             }
 
-            if (user == null || user.Password != users.Password)
+            if (users == null || users.Password != users.Password)
             {
                 return Unauthorized("Usuario o contraseña incorrectos.");
             }
 
-            var token = _tokenRepository.GetToken(user);
+            var token = _tokenRepository.GetToken(users);
 
             return Ok(new { Token = token });
         }
