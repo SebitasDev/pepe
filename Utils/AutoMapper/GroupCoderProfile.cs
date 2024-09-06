@@ -12,7 +12,7 @@ namespace RiwiTalent.Utils.Mappings
     public class GroupCoderProfile : Profile
     {
         public GroupCoderProfile() {
-           CreateMap<GroupCoderDto, GroupCoder>()
+           CreateMap<GroupCoderDto, GruopCoder>()
                                         .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); 
         } 
     }

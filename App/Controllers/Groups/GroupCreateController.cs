@@ -16,7 +16,7 @@ namespace RiwiTalent.App.Controllers.Groups
         //endpoint
         [HttpPost]
         [Route("RiwiTalent/CreateGroups")]
-        public IActionResult Post([FromBody] GroupCoder groupCoder)
+        public IActionResult Post([FromBody] GruopCoder groupCoder)
         {
             if(!ModelState.IsValid)
             {
