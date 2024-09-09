@@ -1,5 +1,6 @@
 using System.Net;
 using System.Text;
+using Amazon.Auth.AccessControlPolicy;
 using backend.Services.Interface;
 using backend.Services.Repository;
 using DotNetEnv;
@@ -10,6 +11,9 @@ using RiwiTalent.Services.Interface;
 using RiwiTalent.Services.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var MyCors = "Cors";
+
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -31,6 +35,14 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
 //Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//CORS
+builder.Services.AddCors(options => {
+    options.AddPolicy(MyCors, builder => 
+    {
+        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+    });
+});
 
 //Configuration JWT with environment variables
 builder.Services.AddAuthentication(option => {
@@ -100,6 +112,8 @@ app.MapGet("/weatherforecast", () =>
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseCors("Cors");
 
 //Controllers
 app.MapControllers();
