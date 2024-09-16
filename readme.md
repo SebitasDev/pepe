@@ -77,7 +77,7 @@ SOA (Arquitectura Orientada a Servicios)
 | <a href="https://github.com/Axus00"><img style="border-radius: 50%" src="https://github.com/Axus00.png" width=70px></a> | <a href="https://github.com/Jhoan-rios"><img style="border-radius: 50%" src="https://github.com/Jhoan-rios.png" width=70px></a>
 | [Github](https://github.com/Axus00) | [Github](https://github.com/Jhoan-rios) |
 
-### **Lideres** 🤝🏻
+### **Lideres** 🤝🏻 
 
 | **KevinDazaR** | **SebitasDev** 
 | --- | --- | 
