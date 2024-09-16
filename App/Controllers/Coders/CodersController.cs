@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using MongoDB.Bson;
+using RiwiTalent.Models;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers
@@ -13,7 +15,7 @@ namespace RiwiTalent.App.Controllers
             _coderRepository = coderRepository;
         }
 
-        //Get all coders
+        //get all coders
         [HttpGet]
         [Route("RiwiTalent/CoderList")]
         public async Task<IActionResult> Get()
@@ -27,6 +29,37 @@ namespace RiwiTalent.App.Controllers
             {
                 var coders = await _coderRepository.GetCoders();
                 return Ok(coders);
+            }
+            catch (Exception)
+            {
+                throw new Exception(Error);
+            }
+        }
+
+
+        //Get all coders pagination
+        [HttpGet]
+        [Route("RiwiTalent/CoderList/page={page}")]
+        public async Task<IActionResult> Get(int page = 1,int cantRegisters = 10)
+        {
+
+            try
+            {
+                var coderPagination = await _coderRepository.GetCodersPagination(page, cantRegisters);
+
+                if(coderPagination == null)
+                {
+                    return BadRequest(RiwiTalent.Utils.Exceptions.StatusError.CreateBadRequest());
+                }
+                return Ok(new 
+                {
+                    Page = page,
+                    Registers = coderPagination.Count(),
+                    Coders = coderPagination,
+                    TotalPages = coderPagination.TotalPages,
+                    PageBefore = coderPagination.PageBefore,
+                    PageAfter = coderPagination.PageAfter
+                });
             }
             catch (Exception)
             {

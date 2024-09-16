@@ -9,7 +9,8 @@ namespace RiwiTalent.Services.Interface
 {
     public interface ICoderRepository
     {
-        Task<IEnumerable<Coder>> GetCoders(); //we get the all coders
+        Task<IEnumerable<Coder>> GetCoders();
+        Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters); //we get the all coders
         void add(Coder coder);//we create a coder
         Task Update(CoderDto coderDto);//we Update a specific coder
         Task<Coder> GetCoderId(string id); //we get a specific coder by id
