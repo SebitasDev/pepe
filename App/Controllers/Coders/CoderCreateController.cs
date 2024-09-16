@@ -1,5 +1,7 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Coders
@@ -18,6 +20,7 @@ namespace RiwiTalent.App.Controllers.Coders
         [Route("RiwiTalent/CreateCoders")]
         public IActionResult Post([FromBody] Coder coder)
         {
+
 
             if(!ModelState.IsValid)
             {
