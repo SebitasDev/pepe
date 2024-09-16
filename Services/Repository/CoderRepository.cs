@@ -53,9 +53,23 @@ namespace RiwiTalent.Services.Repository
 
         public async Task<IEnumerable<Coder>> GetCoders()
         {
+            var coders = await _mongoCollection.Find(_ => true)
+                                                .ToListAsync();
+            
+            return coders;
+        }
+
+        public async Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters)
+        {
+            var skip = (page -1) * cantRegisters;
             //we get all coders
-            var coder = await _mongoCollection.Find(_ => true).ToListAsync();
-            return coder;
+            var coders = await _mongoCollection.Find(_ => true)
+                                                .Skip(skip)
+                                                .Limit(cantRegisters)
+                                                .ToListAsync();
+
+            var total = await _mongoCollection.CountDocumentsAsync(_ => true);                                  
+            return Pagination<Coder>.CreatePagination(coders, (int)total, page, cantRegisters);
         }
 
         public async Task Update(CoderDto coderDto)
@@ -110,5 +124,8 @@ namespace RiwiTalent.Services.Repository
             var update = Builders<Coder>.Update.Set(c => c.Status, "Active"); // Definimos la actualización que cambia el estado a "Active"
             _mongoCollection.UpdateOne(filter, update);// Realizamos la actualización en la base de datos de forma sincrónica
         }
+
+        
+
     }
 }
