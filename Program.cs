@@ -15,7 +15,7 @@ using RiwiTalent.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var MyCors = "Cors";
+const string MyCors = "PolicyCors";
 
 
 // Add services to the container.
@@ -47,7 +47,9 @@ builder.Services.AddTransient<IValidator<GroupCoderDto>, GroupCoderValidator>();
 builder.Services.AddCors(options => {
     options.AddPolicy(MyCors, builder => 
     {
-        builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+        builder.WithOrigins("http://localhost:5120", "http://localhost:5113")
+                .WithHeaders("content-type")
+                .WithMethods("GET", "POST");
     });
 });
 
@@ -86,7 +88,9 @@ builder.Services.AddAuthentication(option => {
             };
         });
 
+
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -117,10 +121,11 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
+app.UseCors("PolicyCors");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("Cors");
 
 //Controllers
 app.MapControllers();

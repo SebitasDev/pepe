@@ -38,7 +38,7 @@ namespace backend.App.Controllers.Login
             }
             else if(users == null || users.Password != users.Password)
             {
-                return NotFound("user or password worng");
+                return NotFound("user or password wrong");
             }
 
 
