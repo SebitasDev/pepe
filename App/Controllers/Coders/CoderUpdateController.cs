@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 
@@ -16,7 +15,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
         //Endpoint
         [HttpPut]
-        [Route("RiwiTalent/UpdateCoder")]
+        [Route("riwitalent/updatecoder")]
         public async Task<IActionResult> UpdateCoder(CoderDto coderDto)
         {
             if(coderDto == null)

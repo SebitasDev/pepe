@@ -1,8 +1,7 @@
 using System.Net;
 using System.Text;
-using Amazon.Auth.AccessControlPolicy;
-using backend.Services.Interface;
-using backend.Services.Repository;
+using RiwiTalent.Services.Interface;
+using RiwiTalent.Services.Repository;
 using DotNetEnv;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,8 +9,6 @@ using Microsoft.IdentityModel.Tokens;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
-using RiwiTalent.Services.Interface;
-using RiwiTalent.Services.Repository;
 using RiwiTalent.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -72,7 +69,7 @@ builder.Services.AddAuthentication(option => {
                 ValidAudience = Environment.GetEnvironmentVariable("Audience"),
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF32.GetBytes(Environment.GetEnvironmentVariable("Issuer")))
             };
-            /* Control de errores del token */
+            //Error controls of token
             configure.Events = new JwtBearerEvents
             {
                 OnAuthenticationFailed = context =>
@@ -104,26 +101,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
+//middleware cors
 app.UseCors("PolicyCors");
 
 app.UseAuthentication();

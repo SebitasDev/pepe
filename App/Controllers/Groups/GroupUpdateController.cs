@@ -1,18 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
-using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using AutoMapper;
-using Microsoft.AspNetCore.Cors;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
-    
+
     public class GroupUpdateController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
@@ -26,8 +19,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Endpoint
         [HttpPut]
-        [Route("RiwiTalent/UpdateGroups")]
-        [EnableCors("PolicyCors")]
+        [Route("riwitalent/updategroups")]
         public async Task<IActionResult> UpdateGroups(GroupCoderDto groupCoderDto)
         {
             if(!ModelState.IsValid)

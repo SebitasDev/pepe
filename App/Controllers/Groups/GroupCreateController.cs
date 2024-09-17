@@ -3,7 +3,6 @@ using RiwiTalent.Services.Interface;
 using RiwiTalent.Models;
 using FluentValidation;
 using RiwiTalent.Models.DTOs;
-using RiwiTalent.Validators;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -20,14 +19,15 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //endpoint
         [HttpPost]
-        [Route("RiwiTalent/CreateGroups")]
+        [Route("riwitalent/creategroups")]
         public IActionResult Post([FromBody] GruopCoder groupCoder)
         {
+            //we create a new instance to can validate
             GroupCoderDto groupCoderDto = new GroupCoderDto
             {
                 Name = groupCoder.Name,
                 Description = groupCoder.Description
-            }; //we create a new instance to can validate
+            }; 
 
             var GroupValidations = _groupValidator.Validate(groupCoderDto);
 
@@ -38,7 +38,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
             try
             {
-                _groupRepository.add(groupCoder);
+                _groupRepository.Add(groupCoder);
                 return Ok("The Group has been created successfully");
             }
             catch (Exception ex)

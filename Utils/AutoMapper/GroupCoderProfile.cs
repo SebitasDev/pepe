@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.VisualBasic;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Models;
 
-namespace RiwiTalent.Utils.Mappings
+namespace RiwiTalent.Utils.AutoMapper
 {
     public class GroupCoderProfile : Profile
     {

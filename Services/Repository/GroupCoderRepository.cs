@@ -18,7 +18,7 @@ namespace RiwiTalent.Services.Repository
             _mongoCollection = context.GroupCoders;
             _mapper = mapper;
         }
-        public void add(GruopCoder groupCoder)
+        public void Add(GruopCoder groupCoder)
         {
             _mongoCollection.InsertOne(groupCoder);
         }
