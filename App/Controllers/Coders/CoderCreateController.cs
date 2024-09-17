@@ -9,10 +9,12 @@ namespace RiwiTalent.App.Controllers.Coders
     public class CoderCreateController : Controller
     {
         private readonly ICoderRepository _coderRepository;
+        private readonly IValidator<Coder> _coderValidator;
         public string Error = "Server Error: The request has not been resolve";
-        public CoderCreateController(ICoderRepository coderRepository)
+        public CoderCreateController(ICoderRepository coderRepository, IValidator<Coder> coderValidator)
         {
             _coderRepository = coderRepository;
+            _coderValidator = coderValidator;
         }
 
         //Endpoint
@@ -22,9 +24,16 @@ namespace RiwiTalent.App.Controllers.Coders
         {
 
 
-            if(!ModelState.IsValid)
+            if(coder == null)
             {
                 return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
+            }
+
+            var ValidationResult = _coderValidator.Validate(coder);
+
+            if(!ValidationResult.IsValid)
+            {
+                return BadRequest(ValidationResult.Errors);
             }
 
             try
