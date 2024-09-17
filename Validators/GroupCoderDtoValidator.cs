@@ -3,9 +3,9 @@ using RiwiTalent.Models.DTOs;
 
 namespace RiwiTalent.Validators
 {
-    public class GroupCoderValidator : AbstractValidator<GroupCoderDto>
+    public class GroupCoderDtoValidator : AbstractValidator<GroupCoderDto>
     {
-        public GroupCoderValidator()
+        public GroupCoderDtoValidator()
         {
             Include(new GroupNameRule());
             Include(new GroupDescriptionRule());

@@ -8,6 +8,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using RiwiTalent.Infrastructure.Data;
+using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Services.Repository;
@@ -41,7 +42,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //Validator
 builder.Services.AddTransient<IValidator<UserDto>, UserDtoValidator>();
-builder.Services.AddTransient<IValidator<GroupCoderDto>, GroupCoderValidator>();
+builder.Services.AddTransient<IValidator<GroupCoderDto>, GroupCoderDtoValidator>();
+builder.Services.AddTransient<IValidator<Coder>, CoderValidator>();
+
 
 //CORS
 builder.Services.AddCors(options => {
