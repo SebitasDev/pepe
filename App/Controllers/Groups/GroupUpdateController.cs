@@ -21,7 +21,7 @@ namespace RiwiTalent.App.Controllers.Groups
         //Endpoint
         [HttpPut]
         [Route("riwitalent/updategroups")]
-        public async Task<IActionResult> UpdateGroups(GruopCoder groupCoder)
+        public async Task<IActionResult> UpdateGroups(GroupCoderDto groupCoderDto)
         {
             if(!ModelState.IsValid)
             {
@@ -30,7 +30,7 @@ namespace RiwiTalent.App.Controllers.Groups
             
             try
             {
-                await _groupRepository.Update(groupCoder);
+                await _groupRepository.Update(groupCoderDto);
                 return Ok("The Group has been updated the correct way");
             }
             catch (Exception ex)

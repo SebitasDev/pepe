@@ -8,6 +8,6 @@ namespace RiwiTalent.Services.Interface
     {
         Task<IEnumerable<GruopCoder>> GetGroupCoders();
         ObjectId Add(GruopCoder groupCoder);
-        Task Update(GruopCoder groupCoder);
+        Task Update(GroupCoderDto groupCoderDto);
     }
 }

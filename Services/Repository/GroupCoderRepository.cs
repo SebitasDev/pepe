@@ -32,24 +32,26 @@ namespace RiwiTalent.Services.Repository
             return Groups;
         }
 
-        public async Task Update(GruopCoder groupCoder)
+        public async Task Update(GroupCoderDto groupCoderDto)
         {
             //we need filter groups by Id
             //First we call the method Builders and have access to Filter
             //Then we can use filter to have access Eq
 
-            var existGroup = await _mongoCollection.Find(group => group.Id == groupCoder.Id).FirstOrDefaultAsync();
+            var convertIdToObjectId = ObjectId.Parse(groupCoderDto.Id);
+
+            var existGroup = await _mongoCollection.Find(group => group.Id == convertIdToObjectId).FirstOrDefaultAsync();
 
             if(existGroup == null)
             {
                 throw new Exception($"{Error}");
             }
 
-            var groupCoders = _mapper.Map(groupCoder, existGroup);
+            var groupCoders = _mapper.Map(groupCoderDto, existGroup);
             var builder = Builders<GruopCoder>.Filter;
-            var filter = builder.Eq(group => group.Id, groupCoder.Id );
+            var filter = builder.Eq(group => group.Id, convertIdToObjectId );
 
-            await _mongoCollection.ReplaceOneAsync(filter, groupCoder);
+            await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
         }
     }
 }
