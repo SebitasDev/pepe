@@ -17,6 +17,7 @@ namespace RiwiTalent.Services.Interface
         Task<Coder> GetCoderName(string name); //we get a specific coder by Name
         void delete(string id);//delete a specific coder    
         void ReactivateCoder(string id);//re-activate a specific coder
-        Task<List<Coder>> GetCodersByLanguage(List<string> languages);
+        Task<List<Coder>> GetCodersByStack(List<string> stack);
+        Task<List<Coder>> GetCodersBylanguage(string level);
     }
 }

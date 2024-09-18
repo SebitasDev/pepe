@@ -113,13 +113,14 @@ namespace RiwiTalent.App.Controllers
             }
         }
 
+        //Get coder by stack tecnical
         [HttpGet]
-        [Route("RiwiTalent/languages/coder")]
-        public async Task<IActionResult> GetCodersByLanguage([FromQuery] List<string> languages)
+        [Route("RiwiTalent/skill/coder")]
+        public async Task<IActionResult> GetCodersByStack([FromQuery] List<string> stack)
         {
             try
             {
-                var coders = await _coderRepository.GetCodersByLanguage(languages);
+                var coders = await _coderRepository.GetCodersByStack(stack);
                 if (coders is null || !coders.Any())
                 {
                     return NotFound("No hay coder con esos lenguajes.");
@@ -133,6 +134,27 @@ namespace RiwiTalent.App.Controllers
                 throw new Exception(Error);
             }
             
+        }
+
+        //Get coder by language level in english
+        [HttpGet]
+        [Route("RiwiTalent/coder/{language}/level")]
+        public async Task<IActionResult> GetCodersByLanguage([FromQuery] string level, string language = "English")
+        {
+            try
+            {
+                var coders = await _coderRepository.GetCodersBylanguage(level);
+                if (coders is null || !coders.Any())
+                {
+                    return NotFound("No hay coder con ese nivel de idioma.");
+                }
+                return Ok(coders);
+            }
+            catch (Exception)
+            {
+                
+                throw new Exception(Error);
+            }
         }
     }
 }
