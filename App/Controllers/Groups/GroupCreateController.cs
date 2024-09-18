@@ -63,6 +63,7 @@ namespace RiwiTalent.App.Controllers.Groups
                         {
                             Url = Link,
                             Key = tokenString,
+                            Status = "Active",
                             Date_Creation = DateTime.UtcNow,
                             Date_Expiration = DateTime.UtcNow.AddDays(7)
                         }

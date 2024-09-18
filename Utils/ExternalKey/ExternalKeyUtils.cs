@@ -27,7 +27,7 @@ namespace RiwiTalent.Utils.ExternalKey
         {
             //token
             List<int> token = new List<int> {};
-
+            
             for(int i = 0; i < 4; i++)
             {
                 int randomNumberInRange = random.Next(0, 10);
