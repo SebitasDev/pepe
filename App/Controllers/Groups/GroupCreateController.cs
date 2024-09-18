@@ -2,19 +2,22 @@ using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Models;
 using FluentValidation;
-using RiwiTalent.Models.DTOs;
+using MongoDB.Bson;
+using RiwiTalent.Utils.ExternalKey;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
     public class GroupCreateController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
-        private readonly IValidator<GroupCoderDto> _groupValidator;
+        private readonly IValidator<GruopCoder> _groupValidator;
+        private readonly ExternalKeyUtils _service;
         public string Error = "Server Error: The request has not been resolve";
-        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GroupCoderDto> groupValidator)
+        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GruopCoder> groupValidator, ExternalKeyUtils service)
         {
             _groupRepository = groupRepository;
             _groupValidator = groupValidator;
+            _service = service;
         }
 
         //endpoint
@@ -23,13 +26,12 @@ namespace RiwiTalent.App.Controllers.Groups
         public IActionResult Post([FromBody] GruopCoder groupCoder)
         {
             //we create a new instance to can validate
-            GroupCoderDto groupCoderDto = new GroupCoderDto
+            if(groupCoder == null)
             {
-                Name = groupCoder.Name,
-                Description = groupCoder.Description
-            }; 
+                return BadRequest("GroupCoderDto cannot be null.");
+            } 
 
-            var GroupValidations = _groupValidator.Validate(groupCoderDto);
+            var GroupValidations = _groupValidator.Validate(groupCoder);
 
             if(!GroupValidations.IsValid)
             {
@@ -38,7 +40,36 @@ namespace RiwiTalent.App.Controllers.Groups
 
             try
             {
-                _groupRepository.Add(groupCoder);
+                ObjectId objectId = ObjectId.GenerateNewId();
+                groupCoder.Id = objectId;
+                Guid guid = _service.ObjectIdToUUID(objectId);
+
+
+                //we define the path of url link
+                string Link = $"https://riwitalent.com/groups/{guid}";
+                string tokenString = _service.GenerateTokenRandom();
+
+                //define a new instance to add uuid into externalkeys -> url
+                GruopCoder newGruopCoder = new GruopCoder
+                {
+                    Id = objectId,
+                    Name = groupCoder.Name,
+                    Description = groupCoder.Description,
+                    Created_At = DateTime.UtcNow,
+                    Coders = groupCoder.Coders,
+                    ExternalKeys = new List<ExternalKey>
+                    {
+                        new ExternalKey
+                        {
+                            Url = Link,
+                            Key = tokenString,
+                            Date_Creation = DateTime.UtcNow,
+                            Date_Expiration = DateTime.UtcNow.AddDays(7)
+                        }
+                    }
+                };
+                _groupRepository.Add(newGruopCoder);
+
                 return Ok("The Group has been created successfully");
             }
             catch (Exception ex)
