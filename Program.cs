@@ -10,6 +10,7 @@ using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Validators;
+using RiwiTalent.Utils.ExternalKey;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,8 @@ builder.Services.AddTransient<IValidator<UserDto>, UserDtoValidator>();
 builder.Services.AddTransient<IValidator<GruopCoder>, GroupCoderValidator>();
 builder.Services.AddTransient<IValidator<Coder>, CoderValidator>();
 
+
+builder.Services.AddTransient<ExternalKeyUtils>();
 
 //CORS
 builder.Services.AddCors(options => {
