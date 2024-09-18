@@ -1,11 +1,12 @@
 using FluentValidation;
 using RiwiTalent.Models.DTOs;
+using RiwiTalent.Models;
 
 namespace RiwiTalent.Validators
 {
-    public class GroupCoderDtoValidator : AbstractValidator<GroupCoderDto>
+    public class GroupCoderValidator : AbstractValidator<GruopCoder>
     {
-        public GroupCoderDtoValidator()
+        public GroupCoderValidator()
         {
             Include(new GroupNameRule());
             Include(new GroupDescriptionRule());
@@ -13,7 +14,7 @@ namespace RiwiTalent.Validators
 
 
         //validations
-        public class GroupNameRule : AbstractValidator<GroupCoderDto>
+        public class GroupNameRule : AbstractValidator<GruopCoder>
         {
             public GroupNameRule()
             {
@@ -22,7 +23,7 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class GroupDescriptionRule : AbstractValidator<GroupCoderDto>
+        public class GroupDescriptionRule : AbstractValidator<GruopCoder>
         {
             public GroupDescriptionRule()
             {

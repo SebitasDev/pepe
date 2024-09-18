@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Models.DTOs;
+using RiwiTalent.Models;
 using AutoMapper;
 
 namespace RiwiTalent.App.Controllers.Groups
@@ -20,7 +21,7 @@ namespace RiwiTalent.App.Controllers.Groups
         //Endpoint
         [HttpPut]
         [Route("riwitalent/updategroups")]
-        public async Task<IActionResult> UpdateGroups(GroupCoderDto groupCoderDto)
+        public async Task<IActionResult> UpdateGroups(GruopCoder groupCoder)
         {
             if(!ModelState.IsValid)
             {
@@ -29,7 +30,7 @@ namespace RiwiTalent.App.Controllers.Groups
             
             try
             {
-                await _groupRepository.Update(groupCoderDto);
+                await _groupRepository.Update(groupCoder);
                 return Ok("The Group has been updated the correct way");
             }
             catch (Exception ex)
