@@ -112,5 +112,27 @@ namespace RiwiTalent.App.Controllers
                 throw new Exception(Error);
             }
         }
+
+        [HttpGet]
+        [Route("RiwiTalent/languages/coder")]
+        public async Task<IActionResult> GetCodersByLanguage([FromQuery] List<string> languages)
+        {
+            try
+            {
+                var coders = await _coderRepository.GetCodersByLanguage(languages);
+                if (coders is null || !coders.Any())
+                {
+                    return NotFound("No hay coder con esos lenguajes.");
+                }
+
+                return Ok(coders);
+            }
+            catch (Exception)
+            {
+                
+                throw new Exception(Error);
+            }
+            
+        }
     }
 }

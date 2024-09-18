@@ -125,7 +125,25 @@ namespace RiwiTalent.Services.Repository
             _mongoCollection.UpdateOne(filter, update);// Realizamos la actualización en la base de datos de forma sincrónica
         }
 
-        
+        public async Task<List<Coder>> GetCodersByLanguage(List<string> languages)
+        {
+            try
+            {
+                var filter = new List<FilterDefinition<Coder>>();
+                foreach (var language in languages)
+                {
+                    var languageFilter = Builders<Coder>.Filter.ElemMatch(c => c.Skills, s => s.Language_Programming == language);
+                    filter.Add(languageFilter);
+                }
 
+                var combinedFilter = Builders<Coder>.Filter.And(filter);
+                
+                return await _mongoCollection.Find(combinedFilter).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("No hay coder con esos lenguajes.");
+            }
+        }
     }
 }
