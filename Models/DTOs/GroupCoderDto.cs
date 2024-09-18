@@ -14,5 +14,8 @@ namespace RiwiTalent.Models.DTOs
         public string? Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
+        public DateTime Created_At { get; set; }
+        public List<CoderDto>? Coders { get; set; }
+        public List<ExternalKey>? ExternalKeys { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace RiwiTalent.Services.Interface
 {
     public interface IGroupCoderRepository 
     {
-        Task<IEnumerable<GruopCoder>> GetGroupCoders();
+        Task<IEnumerable<GroupCoderDto>> GetGroupCoders();
         ObjectId Add(GruopCoder groupCoder);
         Task Update(GroupCoderDto groupCoderDto);
     }

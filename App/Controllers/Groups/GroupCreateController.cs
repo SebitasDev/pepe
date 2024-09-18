@@ -4,6 +4,7 @@ using RiwiTalent.Models;
 using FluentValidation;
 using MongoDB.Bson;
 using RiwiTalent.Utils.ExternalKey;
+using RiwiTalent.Models.Enums;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
@@ -46,7 +47,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
 
                 //we define the path of url link
-                string Link = $"https://riwitalent.com/groups/{guid}";
+                string Link = $"http://riwitalent/external/{guid}";
                 string tokenString = _service.GenerateTokenRandom();
 
                 //define a new instance to add uuid into externalkeys -> url
@@ -63,7 +64,7 @@ namespace RiwiTalent.App.Controllers.Groups
                         {
                             Url = Link,
                             Key = tokenString,
-                            Status = "Active",
+                            Status = Status.Active.ToString(),
                             Date_Creation = DateTime.UtcNow,
                             Date_Expiration = DateTime.UtcNow.AddDays(7)
                         }

@@ -26,10 +26,20 @@ namespace RiwiTalent.Services.Repository
             return groupCoder.Id;
         }
 
-        public async Task<IEnumerable<GruopCoder>> GetGroupCoders()
+        public async Task<IEnumerable<GroupCoderDto>> GetGroupCoders()
         {
             var Groups = await _mongoCollection.Find(_ => true).ToListAsync();
-            return Groups;
+
+            var newGroup = Groups.Select(group => new GroupCoderDto
+            {
+                Id = group.Id.ToString(),
+                Name = group.Name,
+                Description = group.Description,
+                Created_At = group.Created_At,
+                Coders = group.Coders,
+                ExternalKeys = group.ExternalKeys
+            });
+            return newGroup;
         }
 
         public async Task Update(GroupCoderDto groupCoderDto)

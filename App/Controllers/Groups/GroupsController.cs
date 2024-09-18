@@ -13,7 +13,7 @@ namespace RiwiTalent.App.Controllers.Groups
         }
 
         [HttpGet]
-        [Route("riwitalent/groups")]
+        [Route($"riwitalent/groups")]
         public async Task<IActionResult> Get()
         {
             var groupList = await _groupRepository.GetGroupCoders();
