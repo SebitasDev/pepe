@@ -4,6 +4,7 @@ namespace RiwiTalent.Models.Enums
     {
         Active,
         Inactive,
-        Defeated
+        Defeated,
+        Grouped
     }
 }

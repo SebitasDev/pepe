@@ -5,20 +5,20 @@ using FluentValidation;
 using MongoDB.Bson;
 using RiwiTalent.Utils.ExternalKey;
 using RiwiTalent.Models.Enums;
+using RiwiTalent.Models.DTOs;
+using RiwiTalent.Utils;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
     public class GroupCreateController : Controller
     {
-        private readonly IGroupCoderRepository _groupRepository;
         private readonly IValidator<GruopCoder> _groupValidator;
-        private readonly ExternalKeyUtils _service;
+        private readonly IGroupCoderRepository _groupRepository;
         public string Error = "Server Error: The request has not been resolve";
-        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GruopCoder> groupValidator, ExternalKeyUtils service)
+        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GruopCoder> groupValidator)
         {
             _groupRepository = groupRepository;
             _groupValidator = groupValidator;
-            _service = service;
         }
 
         //endpoint
@@ -41,36 +41,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
             try
             {
-                ObjectId objectId = ObjectId.GenerateNewId();
-                groupCoder.Id = objectId;
-                Guid guid = _service.ObjectIdToUUID(objectId);
-
-
-                //we define the path of url link
-                string Link = $"http://riwitalent/external/{guid}";
-                string tokenString = _service.GenerateTokenRandom();
-
-                //define a new instance to add uuid into externalkeys -> url
-                GruopCoder newGruopCoder = new GruopCoder
-                {
-                    Id = objectId,
-                    Name = groupCoder.Name,
-                    Description = groupCoder.Description,
-                    Created_At = DateTime.UtcNow,
-                    Coders = groupCoder.Coders,
-                    ExternalKeys = new List<ExternalKey>
-                    {
-                        new ExternalKey
-                        {
-                            Url = Link,
-                            Key = tokenString,
-                            Status = Status.Active.ToString(),
-                            Date_Creation = DateTime.UtcNow,
-                            Date_Expiration = DateTime.UtcNow.AddDays(7)
-                        }
-                    }
-                };
-                _groupRepository.Add(newGruopCoder);
+                _groupRepository.Add(groupCoder);
 
                 return Ok("The Group has been created successfully");
             }

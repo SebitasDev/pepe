@@ -4,24 +4,63 @@ using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
+using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.ExternalKey;
 
 namespace RiwiTalent.Services.Repository
 {
     public class GroupCoderRepository : IGroupCoderRepository
     {
         private readonly IMongoCollection<GruopCoder> _mongoCollection;
+                private readonly ExternalKeyUtils _service;
         private readonly IMapper _mapper;
 
         private string Error = "The group not found";
-        public GroupCoderRepository(MongoDbContext context, IMapper mapper)
+        public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service)
         {
             _mongoCollection = context.GroupCoders;
             _mapper = mapper;
+            _service = service;
         }
         public ObjectId Add(GruopCoder groupCoder)
         {
-            _mongoCollection.InsertOne(groupCoder);
+            ObjectId objectId = ObjectId.GenerateNewId();
+            groupCoder.Id = objectId;
+            Guid guid = _service.ObjectIdToUUID(objectId);
+
+
+            //we define the path of url link
+            string Link = $"http://riwitalent/external/{guid}";
+            string tokenString = _service.GenerateTokenRandom();
+
+            foreach (var coder in groupCoder.Coders)
+            {
+                coder.Status = Status.Grouped.ToString();
+            }
+
+            //define a new instance to add uuid into externalkeys -> url
+            GruopCoder newGruopCoder = new GruopCoder
+            {
+                Id = objectId,
+                Name = groupCoder.Name,
+                Description = groupCoder.Description,
+                Created_At = DateTime.UtcNow,
+                Coders = groupCoder.Coders,
+                ExternalKeys = new List<ExternalKey>
+                {
+                    new ExternalKey
+                    {
+                        Url = Link,
+                        Key = tokenString,
+                        Status = Status.Active.ToString(),
+                        Date_Creation = DateTime.UtcNow,
+                        Date_Expiration = DateTime.UtcNow.AddDays(7)
+                    }
+                }
+            };
+
+            _mongoCollection.InsertOne(newGruopCoder);
 
             return groupCoder.Id;
         }
