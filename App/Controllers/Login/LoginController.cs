@@ -1,11 +1,11 @@
-using backend.Services.Interface;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models.DTOs;
+using RiwiTalent.Services.Interface;
 
-namespace backend.App.Controllers.Login
+namespace RiwiTalent.App.Controllers.Login
 {
     public class LoginController : ControllerBase
     {
@@ -24,11 +24,12 @@ namespace backend.App.Controllers.Login
         {
             var users = await _context.Users.Find(u => u.Email == tokenResponseDto.Email && u.Password == tokenResponseDto.Password).FirstOrDefaultAsync();
 
+            //we create a new instance to can validate
             UserDto userDto = new UserDto
             {
                 Email = users.Email,
                 Password = users.Password
-            }; //we create a new instance to can validate
+            }; 
 
             var UserValidations = _validatorUser.Validate(userDto);
 

@@ -2,17 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Models;
 using FluentValidation;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Validators;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
     public class GroupCreateController : Controller
     {
+        private readonly IValidator<GruopCoder> _groupValidator;
         private readonly IGroupCoderRepository _groupRepository;
-        private readonly IValidator<GroupCoderDto> _groupValidator;
         public string Error = "Server Error: The request has not been resolve";
-        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GroupCoderDto> groupValidator)
+        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GruopCoder> groupValidator)
         {
             _groupRepository = groupRepository;
             _groupValidator = groupValidator;
@@ -20,16 +18,16 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //endpoint
         [HttpPost]
-        [Route("RiwiTalent/CreateGroups")]
+        [Route("riwitalent/creategroups")]
         public IActionResult Post([FromBody] GruopCoder groupCoder)
         {
-            GroupCoderDto groupCoderDto = new GroupCoderDto
+            //we create a new instance to can validate
+            if(groupCoder == null)
             {
-                Name = groupCoder.Name,
-                Description = groupCoder.Description
-            }; //we create a new instance to can validate
+                return BadRequest("GroupCoderDto cannot be null.");
+            } 
 
-            var GroupValidations = _groupValidator.Validate(groupCoderDto);
+            var GroupValidations = _groupValidator.Validate(groupCoder);
 
             if(!GroupValidations.IsValid)
             {
@@ -38,7 +36,8 @@ namespace RiwiTalent.App.Controllers.Groups
 
             try
             {
-                _groupRepository.add(groupCoder);
+                _groupRepository.Add(groupCoder);
+
                 return Ok("The Group has been created successfully");
             }
             catch (Exception ex)

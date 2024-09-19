@@ -1,18 +1,18 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using backend.Services.Interface;
 using Microsoft.IdentityModel.Tokens;
 using RiwiTalent.Models;
+using RiwiTalent.Services.Interface;
 
-namespace backend.Services.Repository
+namespace RiwiTalent.Services.Repository
 {
     public class TokenRepository : ITokenRepository
     {
         private readonly string key;
         private readonly string Issuer;
         private readonly string Audience;
-        public TokenRepository(IConfiguration configuration)
+        public TokenRepository()
         {
             key = Environment.GetEnvironmentVariable("Key");
             Issuer = Environment.GetEnvironmentVariable("Issuer");
