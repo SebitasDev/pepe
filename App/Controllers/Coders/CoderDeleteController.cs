@@ -30,24 +30,25 @@ namespace RiwiTalent.App.Controllers.Coders
                 throw;
             }
         }
-    [HttpPut]
-    [Route("riwitalent/{id:length(24)}/reactivate")]
-    public IActionResult Reactivate(string id)
-    {
-        /* The function has the main principle of search by coder id
-            and then update status the Inactive to Active
-        */
-        try
+
+        [HttpPut]
+        [Route("riwitalent/{id:length(24)}/reactivate")]
+        public IActionResult Reactivate(string id)
         {
-            _coderRepository.ReactivateCoder(id);
-            return Ok(new { Message = "The status of coder has been updated to Active" });
+            /* The function has the main principle of search by coder id
+                and then update status the Inactive to Active
+            */
+            try
+            {
+                _coderRepository.ReactivateCoder(id);
+                return Ok(new { Message = "The status of coder has been updated to Active" });
+            }
+            catch (Exception)
+            {   
+                return StatusCode(500, Error);
+                throw;  
+            }
         }
-        catch (Exception)
-        {   
-            return StatusCode(500, Error);
-            throw;  
-        }
-    }
     }
 }
 
