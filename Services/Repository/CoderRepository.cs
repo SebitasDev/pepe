@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
+using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.Services.Repository
@@ -91,14 +92,14 @@ namespace RiwiTalent.Services.Repository
 
             await _mongoCollection.ReplaceOneAsync(filter, existCoder);
         
-        }
+        }  
 
         public void Delete(string id)
         {
             //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Active to Inactive
 
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);         
-            var update = Builders<Coder>.Update.Set(c => c.Status, "Inactive");            
+            var update = Builders<Coder>.Update.Set(c => c.Status, Status.Inactive.ToString());            
             _mongoCollection.UpdateOneAsync(filter, update);
         }
 
@@ -107,7 +108,7 @@ namespace RiwiTalent.Services.Repository
             //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Inactive to Active
             
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);           
-            var update = Builders<Coder>.Update.Set(c => c.Status, "Active");
+            var update = Builders<Coder>.Update.Set(c => c.Status, Status.Active.ToString());
             _mongoCollection.UpdateOne(filter, update);
         }
     }

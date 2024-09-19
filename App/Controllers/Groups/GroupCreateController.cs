@@ -2,11 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 using RiwiTalent.Models;
 using FluentValidation;
-using MongoDB.Bson;
-using RiwiTalent.Utils.ExternalKey;
-using RiwiTalent.Models.Enums;
-using RiwiTalent.Models.DTOs;
-using RiwiTalent.Utils;
 
 namespace RiwiTalent.App.Controllers.Groups
 {

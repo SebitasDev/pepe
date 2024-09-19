@@ -1,37 +1,38 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Groups
 {
-    public class GroupsController : Controller
+    public class DeleteCoderGroupController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
         public string Error = "Server Error: The request has not been resolve";
-        public GroupsController(IGroupCoderRepository groupRepository)
+        public DeleteCoderGroupController(IGroupCoderRepository groupRepository)
         {
             _groupRepository = groupRepository;
         }
 
-        [HttpGet]
-        [Route($"riwitalent/groups")]
-        public async Task<IActionResult> Get()
+        //endpoint
+        [HttpDelete]
+        [Route("riwitalent/{id:length(24)}deletecodergroup")]
+        public async Task<IActionResult> DeleteCoder(string id)
         {
             try
             {
-                var groupList = await _groupRepository.GetGroupCoders();
-
-                if(groupList is null)
-                {
-                    return NotFound(Utils.Exceptions.StatusError.CreateNotFound());
-                }
-
-                return Ok(groupList);
+                await _groupRepository.DeleteCoderGroup(id);
+                return NoContent();
             }
             catch (Exception)
             {
+                
                 return StatusCode(500, Error);
                 throw;
             }
+            
         }
     }
 }

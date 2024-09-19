@@ -13,13 +13,15 @@ namespace RiwiTalent.Services.Repository
     public class GroupCoderRepository : IGroupCoderRepository
     {
         private readonly IMongoCollection<GruopCoder> _mongoCollection;
-                private readonly ExternalKeyUtils _service;
+        private readonly IMongoCollection<Coder> _mongoCollectionCoder;
+        private readonly ExternalKeyUtils _service;
         private readonly IMapper _mapper;
 
         private string Error = "The group not found";
         public GroupCoderRepository(MongoDbContext context, IMapper mapper, ExternalKeyUtils service)
         {
             _mongoCollection = context.GroupCoders;
+            _mongoCollectionCoder = context.Coders;
             _mapper = mapper;
             _service = service;
         }
@@ -34,11 +36,6 @@ namespace RiwiTalent.Services.Repository
             string Link = $"http://riwitalent/external/{guid}";
             string tokenString = _service.GenerateTokenRandom();
 
-            foreach (var coder in groupCoder.Coders)
-            {
-                coder.Status = Status.Grouped.ToString();
-            }
-
             //define a new instance to add uuid into externalkeys -> url
             GruopCoder newGruopCoder = new GruopCoder
             {
@@ -46,7 +43,6 @@ namespace RiwiTalent.Services.Repository
                 Name = groupCoder.Name,
                 Description = groupCoder.Description,
                 Created_At = DateTime.UtcNow,
-                Coders = groupCoder.Coders,
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
@@ -65,19 +61,30 @@ namespace RiwiTalent.Services.Repository
             return groupCoder.Id;
         }
 
+        public async Task DeleteCoderGroup(string id)
+        {
+            var filterCoder = Builders<Coder>.Filter.Eq(coder => coder.Id, id);
+            var updateStatusAndRelation = Builders<Coder>.Update.Combine(
+                Builders<Coder>.Update.Set(coder => coder.Status, Status.Inactive.ToString()),
+                Builders<Coder>.Update.Set(coder => coder.GroupId, null)
+            );
+
+            await _mongoCollectionCoder.UpdateOneAsync(filterCoder, updateStatusAndRelation);
+        }
+
         public async Task<IEnumerable<GroupCoderDto>> GetGroupCoders()
         {
             var Groups = await _mongoCollection.Find(_ => true).ToListAsync();
 
-            var newGroup = Groups.Select(group => new GroupCoderDto
+            var newGroup = Groups.Select(groups => new GroupCoderDto
             {
-                Id = group.Id.ToString(),
-                Name = group.Name,
-                Description = group.Description,
-                Created_At = group.Created_At,
-                Coders = group.Coders,
-                ExternalKeys = group.ExternalKeys
+                Id = groups.Id.ToString(),
+                Name = groups.Name,
+                Description = groups.Description,
+                Created_At = groups.Created_At,
+                ExternalKeys = groups.ExternalKeys
             });
+
             return newGroup;
         }
 

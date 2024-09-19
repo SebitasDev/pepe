@@ -1,5 +1,6 @@
 using RiwiTalent.Models;
 using MongoDB.Driver;
+using RiwiTalent.Models.DTOs;
 
 namespace RiwiTalent.Infrastructure.Data
 {

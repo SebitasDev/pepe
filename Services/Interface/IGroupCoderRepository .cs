@@ -9,5 +9,6 @@ namespace RiwiTalent.Services.Interface
         Task<IEnumerable<GroupCoderDto>> GetGroupCoders();
         ObjectId Add(GruopCoder groupCoder);
         Task Update(GroupCoderDto groupCoderDto);
+        Task DeleteCoderGroup(string id);
     }
 }
