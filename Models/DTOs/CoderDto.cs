@@ -21,5 +21,9 @@ namespace RiwiTalent.Models.DTOs
         public int Age { get; set; }
         public string? Cv { get; set; }
         public string? Status { get; set; }
+        public string? Stack { get; set; }
+        public StandarRiwi? StandarRiwi { get; set; }
+        public List<Skill>? Skills { get; set; }
+        public LanguageSkill? LanguageSkills { get; set; }
     }
 }

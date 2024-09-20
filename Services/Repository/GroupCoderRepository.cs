@@ -25,7 +25,7 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
             _service = service;
         }
-        public ObjectId Add(GruopCoder groupCoder)
+        public ObjectId Add(GruopCoder groupCoder, CoderDto coderDto)
         {
             ObjectId objectId = ObjectId.GenerateNewId();
             groupCoder.Id = objectId;
@@ -43,6 +43,26 @@ namespace RiwiTalent.Services.Repository
                 Name = groupCoder.Name,
                 Description = groupCoder.Description,
                 Created_At = DateTime.UtcNow,
+                Coders = new List<CoderDto>
+                {
+                    new CoderDto
+                    {
+                        Id = coderDto.Id,
+                        FirstName = coderDto.FirstName,
+                        SecondName = coderDto.Id,
+                        FirstLastName = coderDto.FirstLastName,
+                        SecondLastName = coderDto.SecondLastName,
+                        Email = coderDto.Email,
+                        Photo = coderDto.Photo,
+                        Age = coderDto.Age,
+                        Cv = coderDto.Cv,
+                        Status = coderDto.Status,
+                        Stack = coderDto.Stack,
+                        StandarRiwi = coderDto.StandarRiwi,
+                        Skills = coderDto.Skills,
+                        LanguageSkills = coderDto.LanguageSkills,
+                    }
+                },
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
@@ -53,7 +73,7 @@ namespace RiwiTalent.Services.Repository
                         Date_Creation = DateTime.UtcNow,
                         Date_Expiration = DateTime.UtcNow.AddDays(7)
                     }
-                }
+                },
             };
 
             _mongoCollection.InsertOne(newGruopCoder);
