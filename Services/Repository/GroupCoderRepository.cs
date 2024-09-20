@@ -25,8 +25,10 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
             _service = service;
         }
-        public ObjectId Add(GruopCoder groupCoder, CoderDto coderDto)
+        public ObjectId Add(GroupDto groupDto)
         {
+            GruopCoder groupCoder = new GruopCoder(); 
+
             ObjectId objectId = ObjectId.GenerateNewId();
             groupCoder.Id = objectId;
             Guid guid = _service.ObjectIdToUUID(objectId);
@@ -40,29 +42,9 @@ namespace RiwiTalent.Services.Repository
             GruopCoder newGruopCoder = new GruopCoder
             {
                 Id = objectId,
-                Name = groupCoder.Name,
-                Description = groupCoder.Description,
+                Name = groupDto.Name,
+                Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
-                Coders = new List<CoderDto>
-                {
-                    new CoderDto
-                    {
-                        Id = coderDto.Id,
-                        FirstName = coderDto.FirstName,
-                        SecondName = coderDto.Id,
-                        FirstLastName = coderDto.FirstLastName,
-                        SecondLastName = coderDto.SecondLastName,
-                        Email = coderDto.Email,
-                        Photo = coderDto.Photo,
-                        Age = coderDto.Age,
-                        Cv = coderDto.Cv,
-                        Status = coderDto.Status,
-                        Stack = coderDto.Stack,
-                        StandarRiwi = coderDto.StandarRiwi,
-                        Skills = coderDto.Skills,
-                        LanguageSkills = coderDto.LanguageSkills,
-                    }
-                },
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey

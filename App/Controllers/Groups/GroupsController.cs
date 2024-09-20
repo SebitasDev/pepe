@@ -27,9 +27,9 @@ namespace RiwiTalent.App.Controllers.Groups
 
                 return Ok(groupList);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
                 throw;
             }
         }

@@ -20,24 +20,25 @@ namespace RiwiTalent.App.Controllers.Groups
         //endpoint
         [HttpPost]
         [Route("riwitalent/creategroups")]
-        public IActionResult Post([FromBody] GruopCoder groupCoder, CoderDto coderDto)
+        // public IActionResult Post([FromBody] GruopCoder groupCoder, CoderDto coderDto)
+        public IActionResult Post([FromBody] GroupDto groupDto)
         {
             //we create a new instance to can validate
-            if(groupCoder == null)
+            if(groupDto == null)
             {
                 return BadRequest("GroupCoderDto cannot be null.");
             } 
 
-            var GroupValidations = _groupValidator.Validate(groupCoder);
+            /* var GroupValidations = _groupValidator.Validate(groupDto); */
 
-            if(!GroupValidations.IsValid)
+            /* if(!GroupValidations.IsValid)
             {
                 return BadRequest(GroupValidations.Errors);
-            }
+            } */
 
             try
             {
-                _groupRepository.Add(groupCoder, coderDto);
+                _groupRepository.Add(groupDto);
 
                 return Ok("The Group has been created successfully");
             }
