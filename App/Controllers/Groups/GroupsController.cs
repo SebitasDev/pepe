@@ -52,6 +52,20 @@ namespace RiwiTalent.App.Controllers.Groups
 
                 await _groupRepository.SendToken(groupCoder, key);
                 return Ok();
+        [HttpGet]
+        [Route("riwitalent/groupdetails/{id}")]
+        public async Task<IActionResult> GetGroupInfoById(string id)
+        {
+            try
+            {
+                GroupInfoDto groupInfo = await _groupRepository.GetGroupInfoById(id);
+
+                if(groupInfo is null)
+                {
+                    return NotFound(Utils.Exceptions.StatusError.CreateNotFound());
+                }
+
+                return Ok(groupInfo);
             }
             catch (Exception ex)
             {
