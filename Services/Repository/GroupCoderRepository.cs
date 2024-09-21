@@ -25,8 +25,10 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
             _service = service;
         }
-        public ObjectId Add(GruopCoder groupCoder)
+        public ObjectId Add(GroupDto groupDto)
         {
+            GruopCoder groupCoder = new GruopCoder(); 
+
             ObjectId objectId = ObjectId.GenerateNewId();
             groupCoder.Id = objectId;
             Guid guid = _service.ObjectIdToUUID(objectId);
@@ -40,8 +42,8 @@ namespace RiwiTalent.Services.Repository
             GruopCoder newGruopCoder = new GruopCoder
             {
                 Id = objectId,
-                Name = groupCoder.Name,
-                Description = groupCoder.Description,
+                Name = groupDto.Name,
+                Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
                 ExternalKeys = new List<ExternalKey>
                 {
@@ -53,7 +55,7 @@ namespace RiwiTalent.Services.Repository
                         Date_Creation = DateTime.UtcNow,
                         Date_Expiration = DateTime.UtcNow.AddDays(7)
                     }
-                }
+                },
             };
 
             _mongoCollection.InsertOne(newGruopCoder);
