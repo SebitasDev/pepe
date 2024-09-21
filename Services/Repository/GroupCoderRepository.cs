@@ -90,6 +90,31 @@ namespace RiwiTalent.Services.Repository
             return newGroup;
         }
 
+        public async Task<GroupInfoDto> GetGroupInfoById(string groupId)
+        {
+            var group = await _mongoCollection.Find(x => x.Id.ToString() == groupId).FirstOrDefaultAsync();
+
+            if(group == null)
+            {
+                throw new Exception(Error);
+            }
+
+            var coders = await _mongoCollectionCoder.Find(x => x.GroupId == groupId)
+                .ToListAsync();
+            
+            List<CoderDto> coderMap = _mapper.Map<List<CoderDto>>(coders);
+
+            GroupInfoDto groupInfo = new GroupInfoDto()
+            {
+                Id = group.Id.ToString(),
+                Name = group.Name,
+                Description = group.Description,
+                Coders = coderMap
+            };
+
+            return groupInfo;
+        }
+
         public async Task Update(GroupCoderDto groupCoderDto)
         {
             //we need filter groups by Id

@@ -20,6 +20,8 @@ namespace RiwiTalent.Utils.AutoMapper
                     opt.AllowNull();
                     opt.Condition((src, dest, sourceMember) => sourceMember != null);
                 });
+
+            CreateMap<Coder, CoderDto>();
         }
     }
 }
