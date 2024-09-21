@@ -11,7 +11,6 @@ namespace RiwiTalent.Services.Interface
         (ObjectId, Guid) Add(GroupDto groupDto);
         Task<KeyDto> SendToken(GruopCoder gruopCoder, string key);
         Task<GroupInfoDto> GetGroupInfoById(string groupId);
-        ObjectId Add(GroupDto groupDto);
         Task Update(GroupCoderDto groupCoderDto);
         Task DeleteCoderGroup(string id);
 
