@@ -6,7 +6,6 @@ namespace RiwiTalent.App.Controllers.Groups
     public class GroupsController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
-        public string Error = "Server Error: The request has not been resolve";
         public GroupsController(IGroupCoderRepository groupRepository)
         {
             _groupRepository = groupRepository;
@@ -29,7 +28,7 @@ namespace RiwiTalent.App.Controllers.Groups
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 throw;
             }
         }

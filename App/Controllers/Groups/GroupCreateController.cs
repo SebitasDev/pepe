@@ -8,10 +8,9 @@ namespace RiwiTalent.App.Controllers.Groups
 {
     public class GroupCreateController : Controller
     {
-        private readonly IValidator<GruopCoder> _groupValidator;
+        private readonly IValidator<GroupDto> _groupValidator;
         private readonly IGroupCoderRepository _groupRepository;
-        public string Error = "Server Error: The request has not been resolve";
-        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GruopCoder> groupValidator)
+        public GroupCreateController(IGroupCoderRepository groupRepository, IValidator<GroupDto> groupValidator)
         {
             _groupRepository = groupRepository;
             _groupValidator = groupValidator;
@@ -29,12 +28,13 @@ namespace RiwiTalent.App.Controllers.Groups
                 return BadRequest("GroupCoderDto cannot be null.");
             } 
 
-            /* var GroupValidations = _groupValidator.Validate(groupDto); */
+            //validations with FluentValidation
+            var GroupValidations = _groupValidator.Validate(groupDto);
 
-            /* if(!GroupValidations.IsValid)
+            if(!GroupValidations.IsValid)
             {
                 return BadRequest(GroupValidations.Errors);
-            } */
+            }
 
             try
             {
@@ -44,7 +44,8 @@ namespace RiwiTalent.App.Controllers.Groups
             }
             catch (Exception ex)
             {
-                throw new Exception(Error, ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
     }
