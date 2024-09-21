@@ -11,7 +11,6 @@ namespace RiwiTalent.App.Controllers.Groups
     {
         private readonly IGroupCoderRepository _groupRepository;
         private readonly IMapper _mapper;
-        public string Error = "Server Error: The request has not been resolve";
         public GroupUpdateController(IGroupCoderRepository groupRepository, IMapper mapper)
         {
             _groupRepository = groupRepository;
@@ -35,7 +34,8 @@ namespace RiwiTalent.App.Controllers.Groups
             }
             catch (Exception ex)
             {
-                throw new Exception(Error, ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
 
         }

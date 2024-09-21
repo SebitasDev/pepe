@@ -7,7 +7,6 @@ namespace RiwiTalent.App.Controllers.Coders
     public class CoderUpdateController : Controller
     {
         private readonly ICoderRepository _coderRepository;
-        public string Error = "Server Error: The request has not been resolve";
         public CoderUpdateController(ICoderRepository coderRepository)
         {
             _coderRepository = coderRepository;
@@ -28,9 +27,10 @@ namespace RiwiTalent.App.Controllers.Coders
                 await _coderRepository.Update(coderDto);
                 return Ok("The coder has been updated the correct way");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
     }

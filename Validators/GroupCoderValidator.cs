@@ -4,7 +4,7 @@ using RiwiTalent.Models;
 
 namespace RiwiTalent.Validators
 {
-    public class GroupCoderValidator : AbstractValidator<GruopCoder>
+    public class GroupCoderValidator : AbstractValidator<GroupDto>
     {
         public GroupCoderValidator()
         {
@@ -14,7 +14,7 @@ namespace RiwiTalent.Validators
 
 
         //validations
-        public class GroupNameRule : AbstractValidator<GruopCoder>
+        public class GroupNameRule : AbstractValidator<GroupDto>
         {
             public GroupNameRule()
             {
@@ -23,7 +23,7 @@ namespace RiwiTalent.Validators
             }
         }
 
-        public class GroupDescriptionRule : AbstractValidator<GruopCoder>
+        public class GroupDescriptionRule : AbstractValidator<GroupDto>
         {
             public GroupDescriptionRule()
             {

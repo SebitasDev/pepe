@@ -25,11 +25,19 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
             _service = service;
         }
-        public ObjectId Add(GruopCoder groupCoder)
+        public ObjectId Add(GroupDto groupDto)
         {
+            GruopCoder groupCoder = new GruopCoder(); 
+
             ObjectId objectId = ObjectId.GenerateNewId();
             groupCoder.Id = objectId;
             Guid guid = _service.ObjectIdToUUID(objectId);
+
+           
+
+            string RealObjectId = _service.RevertObjectIdUUID(guid);
+
+            Console.WriteLine($"el objectId del grupo es: {RealObjectId}");
 
 
             //we define the path of url link
@@ -40,9 +48,10 @@ namespace RiwiTalent.Services.Repository
             GruopCoder newGruopCoder = new GruopCoder
             {
                 Id = objectId,
-                Name = groupCoder.Name,
-                Description = groupCoder.Description,
+                Name = groupDto.Name,
+                Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
+                Status = Status.Active.ToString(),
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
@@ -53,7 +62,7 @@ namespace RiwiTalent.Services.Repository
                         Date_Creation = DateTime.UtcNow,
                         Date_Expiration = DateTime.UtcNow.AddDays(7)
                     }
-                }
+                },
             };
 
             _mongoCollection.InsertOne(newGruopCoder);
@@ -87,6 +96,7 @@ namespace RiwiTalent.Services.Repository
 
             return newGroup;
         }
+
 
         public async Task Update(GroupCoderDto groupCoderDto)
         {

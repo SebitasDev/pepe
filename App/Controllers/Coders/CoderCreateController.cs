@@ -9,7 +9,6 @@ namespace RiwiTalent.App.Controllers.Coders
     {
         private readonly ICoderRepository _coderRepository;
         private readonly IValidator<Coder> _coderValidator;
-        public string Error = "Server Error: The request has not been resolve";
         public CoderCreateController(ICoderRepository coderRepository, IValidator<Coder> coderValidator)
         {
             _coderRepository = coderRepository;
@@ -28,6 +27,8 @@ namespace RiwiTalent.App.Controllers.Coders
                 return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
             }
 
+
+            //validations with FluentValidation
             var ValidationResult = _coderValidator.Validate(coder);
 
             if(!ValidationResult.IsValid)
@@ -40,9 +41,10 @@ namespace RiwiTalent.App.Controllers.Coders
                 _coderRepository.Add(coder);
                 return Ok("The coder has been created successfully");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
 

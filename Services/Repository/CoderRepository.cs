@@ -90,7 +90,7 @@ namespace RiwiTalent.Services.Repository
             var builder = Builders<Coder>.Filter;
             var filter = builder.Eq(coder => coder.Id, coderMap.Id);
 
-            await _mongoCollection.ReplaceOneAsync(filter, existCoder);
+            await _mongoCollection.ReplaceOneAsync(filter, coderMap);
         
         }  
 

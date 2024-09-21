@@ -40,7 +40,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 //Validator
 builder.Services.AddTransient<IValidator<UserDto>, UserDtoValidator>();
-builder.Services.AddTransient<IValidator<GruopCoder>, GroupCoderValidator>();
+builder.Services.AddTransient<IValidator<GroupDto>, GroupCoderValidator>();
 builder.Services.AddTransient<IValidator<Coder>, CoderValidator>();
 
 
@@ -50,7 +50,7 @@ builder.Services.AddTransient<ExternalKeyUtils>();
 builder.Services.AddCors(options => {
     options.AddPolicy(MyCors, builder => 
     {
-        builder.WithOrigins("http://localhost:5120", "http://localhost:5113")
+        builder.WithOrigins("http://localhost:5120", "http://localhost:5113", "http://localhost:7064")
                 .WithHeaders("content-type")
                 .WithMethods("GET", "POST");
     });

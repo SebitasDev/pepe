@@ -10,7 +10,6 @@ namespace RiwiTalent.App.Controllers.Groups
     public class DeleteCoderGroupController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
-        public string Error = "Server Error: The request has not been resolve";
         public DeleteCoderGroupController(IGroupCoderRepository groupRepository)
         {
             _groupRepository = groupRepository;
@@ -26,10 +25,9 @@ namespace RiwiTalent.App.Controllers.Groups
                 await _groupRepository.DeleteCoderGroup(id);
                 return NoContent();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
-                return StatusCode(500, Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 throw;
             }
             

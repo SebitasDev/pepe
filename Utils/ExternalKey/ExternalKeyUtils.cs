@@ -40,5 +40,30 @@ namespace RiwiTalent.Utils.ExternalKey
             return string.Join("", token);
 
         }
+
+        //revertir UUID
+        public string RevertObjectIdUUID(Guid guid)
+        {
+
+            string UUID = guid.ToString();
+
+            List<string> ObjectIdUUID = new List<string>();
+
+
+            foreach (var uuid in UUID)
+            {
+                ObjectIdUUID.Add(uuid.ToString());
+            }
+
+            string result = string.Join("", ObjectIdUUID).Replace("-", "");
+
+            //we valdiate the lenght
+            if(result.Length > 24)
+            {
+                result = result.Remove(result.Length - 8);
+            }
+
+            return result;
+        }
     }
 }
