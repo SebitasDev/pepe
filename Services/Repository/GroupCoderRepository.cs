@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
@@ -6,6 +7,7 @@ using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.ExternalKey;
 
 namespace RiwiTalent.Services.Repository
@@ -25,13 +27,19 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
             _service = service;
         }
-        public ObjectId Add(GroupDto groupDto)
+        public (ObjectId, Guid) Add(GroupDto groupDto)
         {
             GruopCoder groupCoder = new GruopCoder(); 
 
+            //generate ObjectId
             ObjectId objectId = ObjectId.GenerateNewId();
+            Guid guid =  _service.ObjectIdToUUID(objectId);
             groupCoder.Id = objectId;
-            Guid guid = _service.ObjectIdToUUID(objectId);
+              
+
+            string RealObjectId = _service.RevertObjectIdUUID(guid);
+
+            Console.WriteLine($"el objectId del grupo es: {RealObjectId}");
 
 
             //we define the path of url link
@@ -45,23 +53,72 @@ namespace RiwiTalent.Services.Repository
                 Name = groupDto.Name,
                 Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
-                // ExternalKeys = new List<ExternalKey>
-                // {
-                //     new ExternalKey
-                //     {
-                //         Url = Link,
-                //         Key = tokenString,
-                //         Status = Status.Active.ToString(),
-                //         Date_Creation = DateTime.UtcNow,
-                //         Date_Expiration = DateTime.UtcNow.AddDays(7)
-                //     }
-                // },
+                Status = Status.Active.ToString(),
+                UUID = guid.ToString(),
+                ExternalKeys = new List<ExternalKey>
+                {
+                    new ExternalKey
+                    {
+                        Url = Link,
+                        Key = tokenString,
+                        Status = Status.Active.ToString(),
+                        Date_Creation = DateTime.UtcNow,
+                        Date_Expiration = DateTime.UtcNow.AddDays(7)
+                    }
+                },
             };
 
             _mongoCollection.InsertOne(newGruopCoder);
 
-            return groupCoder.Id;
+            return (groupCoder.Id, guid);
         }
+
+        public async Task<KeyDto> SendToken(GruopCoder gruopCoder, string key)
+        {
+
+            try
+            {
+
+                var searchGroup = await _mongoCollection.Find(group => group.Id == gruopCoder.Id).FirstOrDefaultAsync();
+
+                if(searchGroup == null)
+                {
+                    throw new Exception($"{Error}");
+                }
+
+                if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
+                {
+                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key == key);
+
+                    foreach (var item in searchGroup.ExternalKeys)
+                    {
+                        Console.WriteLine($"key disponible: {item.Key}");
+                    }
+
+                    if(KeyValidate != null)
+                    {
+                        Console.WriteLine("La llave de acceso es correcta ");
+                    }
+                    else
+                    {
+                        StatusError.CreateNotFound();
+                    }
+                }
+                else 
+                {
+                    throw new Exception("External key not found");
+                }
+            
+                throw new Exception("External key not found");
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+        }
+
+        
 
         public async Task DeleteCoderGroup(string id)
         {
@@ -136,5 +193,6 @@ namespace RiwiTalent.Services.Repository
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
         }
+
     }
 }

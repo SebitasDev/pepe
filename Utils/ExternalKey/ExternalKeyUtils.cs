@@ -1,10 +1,16 @@
 using MongoDB.Bson;
+using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
+using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.Utils.ExternalKey
 {
     public class ExternalKeyUtils
     {
+
         public static Random random = new Random();
+
+
         //convert objectId at UUID
         public Guid ObjectIdToUUID(ObjectId objectId)
         {
@@ -39,6 +45,31 @@ namespace RiwiTalent.Utils.ExternalKey
 
             return string.Join("", token);
 
+        }
+
+        //revertir UUID
+        public string RevertObjectIdUUID(Guid guid)
+        {
+
+            string UUID = guid.ToString();
+
+            List<string> ObjectIdUUID = new List<string>();
+
+
+            foreach (var uuid in UUID)
+            {
+                ObjectIdUUID.Add(uuid.ToString());
+            }
+
+            string result = string.Join("", ObjectIdUUID).Replace("-", "");
+
+            //we valdiate the lenght
+            if(result.Length > 24)
+            {
+                result = result.Remove(result.Length - 8);
+            }
+
+            return result;
         }
     }
 }
