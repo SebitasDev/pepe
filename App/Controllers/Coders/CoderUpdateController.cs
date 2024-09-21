@@ -33,5 +33,21 @@ namespace RiwiTalent.App.Controllers.Coders
                 throw;
             }
         }
+
+        [HttpPut]
+        [Route("riwitalent/addcodersgroup")]
+        public async Task<IActionResult> AddCodersToGroup(CoderGroupDto coderGroup)
+        {
+            try
+            {
+                await _coderRepository.UpdateCodersGroup(coderGroup);
+                return Ok("List of coders sucessfully added to group");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
+            }
+        }
     }
 }

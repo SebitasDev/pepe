@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Groups
@@ -25,6 +26,28 @@ namespace RiwiTalent.App.Controllers.Groups
                 }
 
                 return Ok(groupList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("riwitalent/groupdetails/{id}")]
+        public async Task<IActionResult> GetGroupInfoById(string id)
+        {
+            try
+            {
+                GroupInfoDto groupInfo = await _groupRepository.GetGroupInfoById(id);
+
+                if(groupInfo is null)
+                {
+                    return NotFound(Utils.Exceptions.StatusError.CreateNotFound());
+                }
+
+                return Ok(groupInfo);
             }
             catch (Exception ex)
             {
