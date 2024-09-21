@@ -13,6 +13,7 @@ namespace RiwiTalent.Models
         public string? Description { get; set; }
         public DateTime Created_At { get; set; }
         public string? Status { get; set; }
+        public string? UUID { get; set; }
 
         [BsonIgnore]
         public List<Coder>? Coders { get; set; }
