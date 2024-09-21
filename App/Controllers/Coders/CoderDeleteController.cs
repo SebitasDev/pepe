@@ -6,7 +6,6 @@ namespace RiwiTalent.App.Controllers.Coders
     public class CoderDeleteController : Controller
     {
         private readonly ICoderRepository _coderRepository;
-        public string Error = "Server Error: The request has not been resolve";
         public CoderDeleteController(ICoderRepository coderRepository)
         {
             _coderRepository = coderRepository;
@@ -24,9 +23,9 @@ namespace RiwiTalent.App.Controllers.Coders
                 _coderRepository.Delete(id);               
                 return Ok(new { Message = "The status of coder has been updated to Inactive" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 throw;
             }
         }
@@ -43,9 +42,9 @@ namespace RiwiTalent.App.Controllers.Coders
                 _coderRepository.ReactivateCoder(id);
                 return Ok(new { Message = "The status of coder has been updated to Active" });
             }
-            catch (Exception)
+            catch (Exception ex)
             {   
-                return StatusCode(500, Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
                 throw;  
             }
         }

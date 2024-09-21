@@ -6,7 +6,6 @@ namespace RiwiTalent.App.Controllers
     public class CodersController : Controller
     {
         private readonly ICoderRepository _coderRepository;
-        public string Error = "Server Error: The request has not been resolve";
         public CodersController(ICoderRepository coderRepository)
         {
             _coderRepository = coderRepository;
@@ -27,9 +26,10 @@ namespace RiwiTalent.App.Controllers
                 var coders = await _coderRepository.GetCoders();
                 return Ok(coders);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
 
@@ -58,9 +58,10 @@ namespace RiwiTalent.App.Controllers
                     PageAfter = coderPagination.PageAfter
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
 
@@ -80,10 +81,10 @@ namespace RiwiTalent.App.Controllers
 
                 return Ok(coder);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
 
@@ -103,10 +104,10 @@ namespace RiwiTalent.App.Controllers
 
                 return Ok(coder);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
     }

@@ -5,6 +5,7 @@ namespace RiwiTalent.Models.Enums
         Active,
         Inactive,
         Defeated,
-        Grouped
+        Grouped,
+        Selected
     }
 }
