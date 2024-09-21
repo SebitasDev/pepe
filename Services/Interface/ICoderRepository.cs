@@ -9,6 +9,7 @@ namespace RiwiTalent.Services.Interface
         Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters);
         void Add(Coder coder);
         Task Update(CoderDto coderDto);
+        Task UpdateCodersGroup(CoderGroupDto gruopCoder);
         Task<Coder> GetCoderId(string id);
         Task<Coder> GetCoderName(string name);
         void Delete(string id);    

@@ -90,9 +90,34 @@ namespace RiwiTalent.Services.Repository
             var builder = Builders<Coder>.Filter;
             var filter = builder.Eq(coder => coder.Id, coderMap.Id);
 
-            await _mongoCollection.ReplaceOneAsync(filter, existCoder);
-        
+            await _mongoCollection.ReplaceOneAsync(filter, coderMap);
         }  
+
+        public async Task UpdateCodersGroup(CoderGroupDto coderGroup)
+        {
+            List<string> coderIdList = coderGroup.CoderList;
+            for (int i = 0; i < coderIdList.Count; i++)
+            {
+                string coderId = coderIdList[i];
+                var existCoder = await _mongoCollection.Find(coder => coder.Id == coderId).FirstOrDefaultAsync();
+                
+                if(existCoder is null)
+                {
+                    throw new Exception($"{Error}");
+                }
+
+                // TASK: Se deberia de hacer un automapper
+                existCoder.GroupId = coderGroup.GruopId;
+                existCoder.Status = Status.Grouped.ToString();
+
+                // var coderMap = _mapper.Map(coderDto, existCoder);
+                var filter = Builders<Coder>.Filter.Eq(x => x.Id, coderId);
+                // var update = filter.Eq(coder => coder.Id, coderMap.Id);
+
+                await _mongoCollection.ReplaceOneAsync(filter, existCoder);
+                
+            }
+        }
 
         public void Delete(string id)
         {
