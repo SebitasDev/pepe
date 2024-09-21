@@ -33,6 +33,12 @@ namespace RiwiTalent.Services.Repository
             groupCoder.Id = objectId;
             Guid guid = _service.ObjectIdToUUID(objectId);
 
+           
+
+            string RealObjectId = _service.RevertObjectIdUUID(guid);
+
+            Console.WriteLine($"el objectId del grupo es: {RealObjectId}");
+
 
             //we define the path of url link
             string Link = $"http://riwitalent/external/{guid}";
@@ -45,6 +51,7 @@ namespace RiwiTalent.Services.Repository
                 Name = groupDto.Name,
                 Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
+                Status = Status.Active.ToString(),
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
@@ -112,9 +119,5 @@ namespace RiwiTalent.Services.Repository
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
         }
-    }
-
-    public class GroupCoder
-    {
     }
 }
