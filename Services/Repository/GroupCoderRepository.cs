@@ -90,6 +90,7 @@ namespace RiwiTalent.Services.Repository
             return newGroup;
         }
 
+
         public async Task Update(GroupCoderDto groupCoderDto)
         {
             //we need filter groups by Id
@@ -111,5 +112,9 @@ namespace RiwiTalent.Services.Repository
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
         }
+    }
+
+    public class GroupCoder
+    {
     }
 }
