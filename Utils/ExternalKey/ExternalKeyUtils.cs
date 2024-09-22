@@ -22,7 +22,7 @@ namespace RiwiTalent.Utils.ExternalKey
 
             for(int i = 12; i < 16; i++)
             {
-                UUIDBytes[i] = (byte)random.Next(0, 256);
+                UUIDBytes[i] = 0;
             }
 
             return new Guid(UUIDBytes);
