@@ -11,5 +11,6 @@ namespace RiwiTalent.Services.Interface
         ObjectId Add(GroupDto groupDto);
         Task Update(GroupCoderDto groupCoderDto);
         Task DeleteCoderGroup(string id);
+        Task<bool> GroupExistByname(string name);
     }
 }
