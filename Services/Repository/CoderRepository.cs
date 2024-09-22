@@ -11,11 +11,13 @@ namespace RiwiTalent.Services.Repository
     public class CoderRepository : ICoderRepository
     {
         private readonly IMongoCollection<Coder> _mongoCollection;
+        private readonly IMongoCollection<GruopCoder> _mongoCollectionGroups;
         private readonly IMapper _mapper; 
         private string Error = "The coder not found";
         public CoderRepository(MongoDbContext context, IMapper mapper)
         {
             _mongoCollection = context.Coders;
+            _mongoCollectionGroups = context.GroupCoders;
             _mapper = mapper;
         }
 
@@ -95,28 +97,16 @@ namespace RiwiTalent.Services.Repository
 
         public async Task UpdateCodersGroup(CoderGroupDto coderGroup)
         {
-            List<string> coderIdList = coderGroup.CoderList;
-            for (int i = 0; i < coderIdList.Count; i++)
-            {
-                string coderId = coderIdList[i];
-                var existCoder = await _mongoCollection.Find(coder => coder.Id == coderId).FirstOrDefaultAsync();
-                
-                if(existCoder is null)
-                {
-                    throw new Exception($"{Error}");
-                }
+            await UpdateCodersProcess(coderGroup, Status.Grouped);
+        }
 
-                // TASK: Se deberia de hacer un automapper
-                existCoder.GroupId = coderGroup.GruopId;
-                existCoder.Status = Status.Grouped.ToString();
+        public async Task UpdateCodersSelected(CoderGroupDto coderGroup)
+        {
+            await UpdateCodersProcess(coderGroup, Status.Selected);
+            var coders = await _mongoCollection.Find(x => x.GroupId == coderGroup.GruopId && x.Status == Status.Grouped.ToString())
+                .ToListAsync();
 
-                // var coderMap = _mapper.Map(coderDto, existCoder);
-                var filter = Builders<Coder>.Filter.Eq(x => x.Id, coderId);
-                // var update = filter.Eq(coder => coder.Id, coderMap.Id);
-
-                await _mongoCollection.ReplaceOneAsync(filter, existCoder);
-                
-            }
+            await UpdateCodersProcess(coders, Status.Active);
         }
 
         public void Delete(string id)
@@ -135,6 +125,81 @@ namespace RiwiTalent.Services.Repository
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);           
             var update = Builders<Coder>.Update.Set(c => c.Status, Status.Active.ToString());
             _mongoCollection.UpdateOne(filter, update);
+        }
+
+        private async Task UpdateCodersProcess(CoderGroupDto coderGroup, Status status)
+        {
+            List<string> coderIdList = coderGroup.CoderList;
+            for (int i = 0; i < coderIdList.Count; i++)
+            {
+                string coderId = coderIdList[i];
+                var existCoder = await _mongoCollection.Find(coder => coder.Id == coderId).FirstOrDefaultAsync();
+                
+                if(existCoder is null)
+                {
+                    throw new Exception($"{Error}");
+                }
+
+                // TASK: Se deberia de hacer un automapper
+                existCoder.GroupId = coderGroup.GruopId;
+                existCoder.Status = status.ToString();
+
+                // var coderMap = _mapper.Map(coderDto, existCoder);
+                var filter = Builders<Coder>.Filter.Eq(x => x.Id, coderId);
+                // var update = filter.Eq(coder => coder.Id, coderMap.Id);
+
+                await _mongoCollection.ReplaceOneAsync(filter, existCoder);
+            }
+        }
+
+        private async Task UpdateCodersProcess(List<Coder> coders, Status status)
+        {
+            for (int i = 0; i < coders.Count; i++)
+            {
+                Coder existCoder = coders[i];
+                // var existCoder = await _mongoCollection.Find(coder => coder.Id == coderId).FirstOrDefaultAsync();
+                
+                if(existCoder is null)
+                {
+                    throw new Exception($"{Error}");
+                }
+
+                // TASK: Se deberia de hacer un automapper
+                // existCoder.GroupId = "";
+                existCoder.Status = status.ToString();
+
+                // var coderMap = _mapper.Map(coderDto, existCoder);
+                var filter = Builders<Coder>.Filter.Eq(x => x.Id, existCoder.Id);
+                // var update = filter.Eq(coder => coder.Id, coderMap.Id);
+
+                await _mongoCollection.ReplaceOneAsync(filter, existCoder);
+            }
+
+        }
+
+        public async Task<IEnumerable<Coder>> GetCodersByGroup(string name)
+        {
+            try
+            {
+                // first we get the name
+                var group = await _mongoCollectionGroups.Find(g => g.Name == name).FirstOrDefaultAsync();
+
+                if (group == null)
+                {
+                    throw new ApplicationException($"El grupo con el nombre '{name}' no existe.");
+                }
+
+                // then we compare the coder group id with the group id
+                var filter = Builders<Coder>.Filter.Eq(c => c.GroupId, group.Id.ToString());
+
+                var codersList = await _mongoCollection.Find(filter).ToListAsync();
+
+                return codersList;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error al obtener los coders del grupo '{name}'", ex);
+            }
         }
     }
 }

@@ -29,6 +29,13 @@ namespace RiwiTalent.Services.Repository
         }
         public (ObjectId, Guid) Add(GroupDto groupDto)
         {
+            var existGroup = _mongoCollection.Find(g => g.Name == groupDto.Name).FirstOrDefault();
+
+            if (existGroup != null)
+            {
+                throw new ApplicationException($"El grupo con el nombre '{groupDto.Name}' ya existe.");
+            }
+
             GruopCoder groupCoder = new GruopCoder(); 
 
             //generate ObjectId
@@ -169,6 +176,16 @@ namespace RiwiTalent.Services.Repository
 
             return groupInfo;
         }
+        
+        // validation of group existence
+        public async Task<bool> GroupExistByname(string name)
+        {
+            var filter = Builders<GruopCoder>.Filter.Eq(g => g.Name, name);
+            var group = await _mongoCollection.Find(filter).FirstOrDefaultAsync();
+
+            // Retorna true si el grupo existe, false si no
+            return group != null;
+        }
 
         public async Task Update(GroupCoderDto groupCoderDto)
         {
@@ -191,6 +208,5 @@ namespace RiwiTalent.Services.Repository
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
         }
-
     }
 }

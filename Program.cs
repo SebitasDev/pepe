@@ -33,6 +33,7 @@ builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<ICoderRepository, CoderRepository>();
 builder.Services.AddScoped<IGroupCoderRepository, GroupCoderRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<ICoderStatusHistoryRepository, CoderStatusHistoryRepository>();
 
 
 //Mapper

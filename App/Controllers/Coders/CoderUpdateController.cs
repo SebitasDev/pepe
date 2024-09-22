@@ -49,5 +49,22 @@ namespace RiwiTalent.App.Controllers.Coders
                 throw;
             }
         }
+
+        [HttpPut]
+        [Route("riwitalent/updatecodersselected")]
+        public async Task<IActionResult> AddSelectedCoders(CoderGroupDto coderGroup)
+        {
+            try
+            {
+                await _coderRepository.UpdateCodersSelected(coderGroup);
+                return Ok("List of coders sucessfully selected by company");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
+            }
+        }
+        
     }
 }
