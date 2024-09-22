@@ -13,6 +13,6 @@ namespace RiwiTalent.Services.Interface
         Task<GroupInfoDto> GetGroupInfoById(string groupId);
         Task Update(GroupCoderDto groupCoderDto);
         Task DeleteCoderGroup(string id);
-        Task<IEnumerable<GruopCoder>> GroupExistByName(string name);
+        Task<bool> GroupExistByName(string name);
     }
 }

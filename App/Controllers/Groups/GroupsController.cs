@@ -45,28 +45,27 @@ namespace RiwiTalent.App.Controllers.Groups
 
         //Get coders by group
         [HttpGet]
-        [Route("riwitalent/group/{name}")]
+        [Route("riwitalent/group/{name}/")]
         public async Task<IActionResult> GetCodersByGroup(string name)
         {
             try
             {
                 var groupExist = await _groupRepository.GroupExistByName(name);
-                if (groupExist is null)
+                if (!groupExist)
                 {
-                    return NotFound($"The group '{name}' not exists.");
+                    return NotFound($"El grupo '{name}' no existe.");
                 }
 
-                /* var coder = await _coderRepository.GetCodersByGroup(name);
+                var coder = await _coderRepository.GetCodersByGroup(name);
                 if (coder == null || !coder.Any())
                 {  
                     return NotFound($"No existe coders por el grupo '{name}'.");
-                } */
-                return Ok(groupExist);
+                }
+                return Ok(coder);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                throw;
+                throw new ApplicationException($"Error al obtener los coders del grupo '{name}'", ex);
             }
         }
 
