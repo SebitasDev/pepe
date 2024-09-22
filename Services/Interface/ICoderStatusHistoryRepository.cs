@@ -10,5 +10,7 @@ namespace RiwiTalent.Services.Interface
         Task<IEnumerable<CoderStatusHistory>> GetCompanyGroupedCoders(string id);
         // Task<Pagination<Coder>> GetCodersPagination(int page, int cantRegisters);
         // void Add(CoderStatusHistory coder);
+        void AddCodersGrouped(CoderGroupDto coderGroup);
+        Task AddCodersSelected(CoderGroupDto coderGroup);
     }
 }
