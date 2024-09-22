@@ -11,11 +11,13 @@ namespace RiwiTalent.Services.Repository
     public class CoderRepository : ICoderRepository
     {
         private readonly IMongoCollection<Coder> _mongoCollection;
+        private readonly IMongoCollection<GruopCoder> _mongoCollectionGroups;
         private readonly IMapper _mapper; 
         private string Error = "The coder not found";
         public CoderRepository(MongoDbContext context, IMapper mapper)
         {
             _mongoCollection = context.Coders;
+            _mongoCollectionGroups = context.GroupCoders;
             _mapper = mapper;
         }
 
@@ -135,6 +137,31 @@ namespace RiwiTalent.Services.Repository
             var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);           
             var update = Builders<Coder>.Update.Set(c => c.Status, Status.Active.ToString());
             _mongoCollection.UpdateOne(filter, update);
+        }
+
+        public async Task<IEnumerable<Coder>> GetCodersByGroup(string name)
+        {
+            try
+            {
+                // first we get the name
+                var group = await _mongoCollectionGroups.Find(g => g.Name == name).FirstOrDefaultAsync();
+
+                if (group == null)
+                {
+                    throw new ApplicationException($"El grupo con el nombre '{name}' no existe.");
+                }
+
+                // then we compare the coder group id with the group id
+                var filter = Builders<Coder>.Filter.Eq(c => c.GroupId, group.Id.ToString());
+
+                var codersList = await _mongoCollection.Find(filter).ToListAsync();
+
+                return codersList;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error al obtener los coders del grupo '{name}'", ex);
+            }
         }
     }
 }
