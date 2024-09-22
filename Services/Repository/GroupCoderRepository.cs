@@ -146,7 +146,7 @@ namespace RiwiTalent.Services.Repository
                 Name = groups.Name,
                 Description = groups.Description,
                 Created_At = groups.Created_At,
-                // ExternalKeys = groups.ExternalKeys
+                ExternalKeys = groups.ExternalKeys
             });
 
             return newGroup;
@@ -178,13 +178,33 @@ namespace RiwiTalent.Services.Repository
         }
         
         // validation of group existence
-        public async Task<bool> GroupExistByname(string name)
+        public async Task<IEnumerable<GruopCoder>> GroupExistByName(string name)
         {
-            var filter = Builders<GruopCoder>.Filter.Eq(g => g.Name, name);
+            var groups = await _mongoCollection.Find(group => group.Name == name).ToListAsync();
+
+            if(groups.Count == 0)
+                throw new Exception("The group name not exists");
+
+            var newGroup = groups.Select(groups => new GruopCoder
+            {
+                Id = groups.Id,
+                Name = groups.Name,
+                Description = groups.Description,
+                Status = groups.Status,
+                Created_At = groups.Created_At,
+                UUID = groups.UUID,
+                Coders = groups.Coders,
+                ExternalKeys = groups.ExternalKeys
+            });
+
+            
+            return newGroup;
+
+            /* var filter = Builders<GruopCoder>.Filter.Eq(g => g.Name, name);
             var group = await _mongoCollection.Find(filter).FirstOrDefaultAsync();
 
             // Retorna true si el grupo existe, false si no
-            return group != null;
+            return group != null; */
         }
 
         public async Task Update(GroupCoderDto groupCoderDto)

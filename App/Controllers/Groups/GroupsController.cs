@@ -12,10 +12,12 @@ namespace RiwiTalent.App.Controllers.Groups
     public class GroupsController : Controller
     {
         private readonly IGroupCoderRepository _groupRepository;
+        private readonly ICoderRepository _coderRepository;
         private readonly ExternalKeyUtils _service;
-        public GroupsController(IGroupCoderRepository groupRepository, ExternalKeyUtils service)
+        public GroupsController(IGroupCoderRepository groupRepository, ICoderRepository coderRepository, ExternalKeyUtils service)
         {
             _groupRepository = groupRepository;
+            _coderRepository = coderRepository;
             _service = service;
         }
 
@@ -33,6 +35,33 @@ namespace RiwiTalent.App.Controllers.Groups
                 }
 
                 return Ok(groupList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
+            }
+        }
+
+        //Get coders by group
+        [HttpGet]
+        [Route("riwitalent/group/{name}")]
+        public async Task<IActionResult> GetCodersByGroup(string name)
+        {
+            try
+            {
+                var groupExist = await _groupRepository.GroupExistByName(name);
+                if (groupExist is null)
+                {
+                    return NotFound($"The group '{name}' not exists.");
+                }
+
+                /* var coder = await _coderRepository.GetCodersByGroup(name);
+                if (coder == null || !coder.Any())
+                {  
+                    return NotFound($"No existe coders por el grupo '{name}'.");
+                } */
+                return Ok(groupExist);
             }
             catch (Exception ex)
             {
