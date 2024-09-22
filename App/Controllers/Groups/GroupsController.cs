@@ -1,5 +1,7 @@
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
@@ -47,11 +49,12 @@ namespace RiwiTalent.App.Controllers.Groups
             try
             {
 
-                var objectId = ObjectId.Parse(id);
-                var groupCoder = new GruopCoder { Id = objectId};
+                var groupCoder = new GruopCoder { UUID = id};
+
 
                 await _groupRepository.SendToken(groupCoder, key);
-                return Ok();
+                return Ok("You've access");
+                
             }
             catch (Exception ex)
             {
