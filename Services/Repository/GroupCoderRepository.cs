@@ -29,6 +29,13 @@ namespace RiwiTalent.Services.Repository
         }
         public (ObjectId, Guid) Add(GroupDto groupDto)
         {
+            var existGroup = _mongoCollection.Find(g => g.Name == groupDto.Name).FirstOrDefault();
+
+            if (existGroup != null)
+            {
+                throw new ApplicationException($"El grupo con el nombre '{groupDto.Name}' ya existe.");
+            }
+
             GruopCoder groupCoder = new GruopCoder(); 
 
             //generate ObjectId
@@ -75,20 +82,18 @@ namespace RiwiTalent.Services.Repository
 
         public async Task<KeyDto> SendToken(GruopCoder gruopCoder, string key)
         {
-
             try
             {
-
-                var searchGroup = await _mongoCollection.Find(group => group.Id == gruopCoder.Id).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.UUID == gruopCoder.UUID).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
-                    throw new Exception($"{Error}");
+                    throw new Exception($"Id is invalid");
                 }
 
                 if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
                 {
-                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key == key);
+                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key.Trim().ToLower() == key.Trim().ToLower());
 
                     foreach (var item in searchGroup.ExternalKeys)
                     {
@@ -97,7 +102,8 @@ namespace RiwiTalent.Services.Repository
 
                     if(KeyValidate != null)
                     {
-                        Console.WriteLine("La llave de acceso es correcta ");
+                        Console.WriteLine("The key is correct");
+                        return new KeyDto { Key = KeyValidate.Key };
                     }
                     else
                     {
@@ -106,14 +112,13 @@ namespace RiwiTalent.Services.Repository
                 }
                 else 
                 {
-                    throw new Exception("External key not found");
+                    throw new Exception("External key not found in this group");
                 }
             
                 throw new Exception("External key not found");
             }
             catch (Exception)
             {
-                
                 throw;
             }
         }
@@ -141,7 +146,7 @@ namespace RiwiTalent.Services.Repository
                 Name = groups.Name,
                 Description = groups.Description,
                 Created_At = groups.Created_At,
-                // ExternalKeys = groups.ExternalKeys
+                ExternalKeys = groups.ExternalKeys
             });
 
             return newGroup;
@@ -171,6 +176,36 @@ namespace RiwiTalent.Services.Repository
 
             return groupInfo;
         }
+        
+        // validation of group existence
+        public async Task<IEnumerable<GruopCoder>> GroupExistByName(string name)
+        {
+            var groups = await _mongoCollection.Find(group => group.Name == name).ToListAsync();
+
+            if(groups.Count == 0)
+                throw new Exception("The group name not exists");
+
+            var newGroup = groups.Select(groups => new GruopCoder
+            {
+                Id = groups.Id,
+                Name = groups.Name,
+                Description = groups.Description,
+                Status = groups.Status,
+                Created_At = groups.Created_At,
+                UUID = groups.UUID,
+                Coders = groups.Coders,
+                ExternalKeys = groups.ExternalKeys
+            });
+
+            
+            return newGroup;
+
+            /* var filter = Builders<GruopCoder>.Filter.Eq(g => g.Name, name);
+            var group = await _mongoCollection.Find(filter).FirstOrDefaultAsync();
+
+            // Retorna true si el grupo existe, false si no
+            return group != null; */
+        }
 
         public async Task Update(GroupCoderDto groupCoderDto)
         {
@@ -193,6 +228,5 @@ namespace RiwiTalent.Services.Repository
 
             await _mongoCollection.ReplaceOneAsync(filter, groupCoders);
         }
-
     }
 }
