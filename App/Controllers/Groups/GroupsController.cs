@@ -54,6 +54,14 @@ namespace RiwiTalent.App.Controllers.Groups
 
                 await _groupRepository.SendToken(groupCoder, key);
                 return Ok();
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
+            }
+        }
+
         [HttpGet]
         [Route("riwitalent/groupdetails/{id}")]
         public async Task<IActionResult> GetGroupInfoById(string id)
@@ -75,5 +83,6 @@ namespace RiwiTalent.App.Controllers.Groups
                 throw;
             }
         }
+        
     }
 }
