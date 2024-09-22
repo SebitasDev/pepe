@@ -75,20 +75,18 @@ namespace RiwiTalent.Services.Repository
 
         public async Task<KeyDto> SendToken(GruopCoder gruopCoder, string key)
         {
-
             try
             {
-
-                var searchGroup = await _mongoCollection.Find(group => group.Id == gruopCoder.Id).FirstOrDefaultAsync();
+                var searchGroup = await _mongoCollection.Find(group => group.UUID == gruopCoder.UUID).FirstOrDefaultAsync();
 
                 if(searchGroup == null)
                 {
-                    throw new Exception($"{Error}");
+                    throw new Exception($"Id is invalid");
                 }
 
                 if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
                 {
-                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key == key);
+                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key.Trim().ToLower() == key.Trim().ToLower());
 
                     foreach (var item in searchGroup.ExternalKeys)
                     {
@@ -97,7 +95,8 @@ namespace RiwiTalent.Services.Repository
 
                     if(KeyValidate != null)
                     {
-                        Console.WriteLine("La llave de acceso es correcta ");
+                        Console.WriteLine("The key is correct");
+                        return new KeyDto { Key = KeyValidate.Key };
                     }
                     else
                     {
@@ -106,14 +105,13 @@ namespace RiwiTalent.Services.Repository
                 }
                 else 
                 {
-                    throw new Exception("External key not found");
+                    throw new Exception("External key not found in this group");
                 }
             
                 throw new Exception("External key not found");
             }
             catch (Exception)
             {
-                
                 throw;
             }
         }
