@@ -53,7 +53,7 @@ namespace RiwiTalent.App.Controllers.Groups
 
 
                 await _groupRepository.SendToken(groupCoder, key);
-                return Ok();
+                return Ok("you've access");
             }
             catch(Exception ex)
             {
