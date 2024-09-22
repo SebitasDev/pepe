@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
@@ -6,6 +7,7 @@ using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
+using RiwiTalent.Utils.Exceptions;
 using RiwiTalent.Utils.ExternalKey;
 
 namespace RiwiTalent.Services.Repository
@@ -25,7 +27,7 @@ namespace RiwiTalent.Services.Repository
             _mapper = mapper;
             _service = service;
         }
-        public ObjectId Add(GroupDto groupDto)
+        public (ObjectId, Guid) Add(GroupDto groupDto)
         {
             var existGroup = _mongoCollection.Find(g => g.Name == groupDto.Name).FirstOrDefault();
 
@@ -36,11 +38,11 @@ namespace RiwiTalent.Services.Repository
 
             GruopCoder groupCoder = new GruopCoder(); 
 
+            //generate ObjectId
             ObjectId objectId = ObjectId.GenerateNewId();
+            Guid guid =  _service.ObjectIdToUUID(objectId);
             groupCoder.Id = objectId;
-            Guid guid = _service.ObjectIdToUUID(objectId);
-
-           
+              
 
             string RealObjectId = _service.RevertObjectIdUUID(guid);
 
@@ -59,6 +61,7 @@ namespace RiwiTalent.Services.Repository
                 Description = groupDto.Description,
                 Created_At = DateTime.UtcNow,
                 Status = Status.Active.ToString(),
+                UUID = guid.ToString(),
                 ExternalKeys = new List<ExternalKey>
                 {
                     new ExternalKey
@@ -74,8 +77,53 @@ namespace RiwiTalent.Services.Repository
 
             _mongoCollection.InsertOne(newGruopCoder);
 
-            return groupCoder.Id;
+            return (groupCoder.Id, guid);
         }
+
+        public async Task<KeyDto> SendToken(GruopCoder gruopCoder, string key)
+        {
+            try
+            {
+                var searchGroup = await _mongoCollection.Find(group => group.UUID == gruopCoder.UUID).FirstOrDefaultAsync();
+
+                if(searchGroup == null)
+                {
+                    throw new Exception($"Id is invalid");
+                }
+
+                if(searchGroup.ExternalKeys != null && searchGroup.ExternalKeys.Any())
+                {
+                    var KeyValidate = searchGroup.ExternalKeys.FirstOrDefault(k => k.Key.Trim().ToLower() == key.Trim().ToLower());
+
+                    foreach (var item in searchGroup.ExternalKeys)
+                    {
+                        Console.WriteLine($"key disponible: {item.Key}");
+                    }
+
+                    if(KeyValidate != null)
+                    {
+                        Console.WriteLine("The key is correct");
+                        return new KeyDto { Key = KeyValidate.Key };
+                    }
+                    else
+                    {
+                        StatusError.CreateNotFound();
+                    }
+                }
+                else 
+                {
+                    throw new Exception("External key not found in this group");
+                }
+            
+                throw new Exception("External key not found");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        
 
         public async Task DeleteCoderGroup(string id)
         {
@@ -98,12 +146,37 @@ namespace RiwiTalent.Services.Repository
                 Name = groups.Name,
                 Description = groups.Description,
                 Created_At = groups.Created_At,
-                ExternalKeys = groups.ExternalKeys
+                // ExternalKeys = groups.ExternalKeys
             });
 
             return newGroup;
         }
 
+        public async Task<GroupInfoDto> GetGroupInfoById(string groupId)
+        {
+            var group = await _mongoCollection.Find(x => x.Id.ToString() == groupId).FirstOrDefaultAsync();
+
+            if(group == null)
+            {
+                throw new Exception(Error);
+            }
+
+            var coders = await _mongoCollectionCoder.Find(x => x.GroupId == groupId)
+                .ToListAsync();
+            
+            List<CoderDto> coderMap = _mapper.Map<List<CoderDto>>(coders);
+
+            GroupInfoDto groupInfo = new GroupInfoDto()
+            {
+                Id = group.Id.ToString(),
+                Name = group.Name,
+                Description = group.Description,
+                Coders = coderMap
+            };
+
+            return groupInfo;
+        }
+        
         // validation of group existence
         public async Task<bool> GroupExistByname(string name)
         {

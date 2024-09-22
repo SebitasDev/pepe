@@ -1,10 +1,16 @@
 using MongoDB.Bson;
+using RiwiTalent.Models;
+using RiwiTalent.Models.DTOs;
+using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.Utils.ExternalKey
 {
     public class ExternalKeyUtils
     {
+
         public static Random random = new Random();
+
+
         //convert objectId at UUID
         public Guid ObjectIdToUUID(ObjectId objectId)
         {
@@ -16,7 +22,7 @@ namespace RiwiTalent.Utils.ExternalKey
 
             for(int i = 12; i < 16; i++)
             {
-                UUIDBytes[i] = 0;
+                UUIDBytes[i] = (byte)random.Next(0, 256);
             }
 
             return new Guid(UUIDBytes);

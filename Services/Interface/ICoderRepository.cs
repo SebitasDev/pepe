@@ -10,6 +10,7 @@ namespace RiwiTalent.Services.Interface
         Task<IEnumerable<Coder>> GetCodersByGroup(string name);
         void Add(Coder coder);
         Task Update(CoderDto coderDto);
+        Task UpdateCodersGroup(CoderGroupDto gruopCoder);
         Task<Coder> GetCoderId(string id);
         Task<Coder> GetCoderName(string name);
         void Delete(string id);    
