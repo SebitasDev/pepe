@@ -129,7 +129,7 @@ namespace RiwiTalent.Services.Repository
         {
             var filterCoder = Builders<Coder>.Filter.Eq(coder => coder.Id, id);
             var updateStatusAndRelation = Builders<Coder>.Update.Combine(
-                Builders<Coder>.Update.Set(coder => coder.Status, Status.Inactive.ToString()),
+                Builders<Coder>.Update.Set(coder => coder.Status, Status.Active.ToString()),
                 Builders<Coder>.Update.Set(coder => coder.GroupId, null)
             );
 
