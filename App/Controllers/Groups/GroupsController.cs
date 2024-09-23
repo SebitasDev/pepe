@@ -59,7 +59,7 @@ namespace RiwiTalent.App.Controllers.Groups
                 var coder = await _coderRepository.GetCodersByGroup(name);
                 if (coder == null || !coder.Any())
                 {  
-                    return NotFound($"No existe coders por el grupo '{name}'.");
+                    return NotFound($"Este grupo aùn no tiene coders '{name}'.");
                 }
                 return Ok(coder);
             }

@@ -129,12 +129,12 @@ namespace RiwiTalent.Services.Repository
         }
         
         
-        public async Task<List<Coder>> GetCodersByStack(List<string> stack)
+        public async Task<List<Coder>> GetCodersBySkill(List<string> skill)
         {
             try
             {
                 var filter = new List<FilterDefinition<Coder>>(); //Defino una variable en la cual ingreso a un listado de lenguajes
-                foreach (var language in stack) //Hago un foreach para recorrer todos los lenguajes de programacion y de esta forma verificar que el coder lo tiene
+                foreach (var language in skill) //Hago un foreach para recorrer todos los lenguajes de programacion y de esta forma verificar que el coder lo tiene
                 {
                     var languageFilter = Builders<Coder>.Filter.ElemMatch(c => c.Skills, s => s.Language_Programming == language);
                     filter.Add(languageFilter); //Cada que voy obteniendo coders con las skills los añado a languageFilter 
