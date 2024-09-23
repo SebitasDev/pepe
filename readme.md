@@ -68,6 +68,31 @@ dotnet watch
 SOA (Arquitectura Orientada a Servicios)
 
 
+## Endpoints de la API
+
+Los endpoints de **Riwi Talent** permiten la interacción entre el frontend, backend y servicios externos:
+
+### Coders
+
+- `GET /api/riwitalent/coders`: Lista todos los coders.
+- `GET /api/riwitalent/coders/page={page}`: Lista coders con paginación.
+- `GET /api/riwitalent/{id}/coders`: Obtiene un coder por ID.
+- `GET /api/riwitalent/{name}/coders`: Obtiene un coder por nombre.
+- `POST /api/riwitalent/createcoders`: Crea un coder.
+- `DELETE /api/riwitalent/{id:length(24)}/deletecoder`: Soft delete del coder por ID.
+- `PUT /api/riwitalent/{id:length(24)}/reactivate`: Reactiva el status del coder por ID.
+- `PUT /api/riwitalent/updatecoder`: Actualiza datos de un coder.
+
+### Groups
+
+- `GET /api/riwitalent/groups`: Lista todos los grupos de coders.
+- `POST /api/riwitalent/creategroups`: Crea un grupo de coders.
+- `PUT /api/riwitalent/updategroups`: Actualiza los datos de un grupo.
+
+### Login
+
+- `POST /api/riwitalent/login`: Valida login y genera un token.
+
 ---
 
 ### **Desarrolladores** 👨🏻‍💻

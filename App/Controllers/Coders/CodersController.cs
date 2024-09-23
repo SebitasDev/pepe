@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using MongoDB.Bson;
-using RiwiTalent.Models;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers
@@ -9,7 +6,6 @@ namespace RiwiTalent.App.Controllers
     public class CodersController : Controller
     {
         private readonly ICoderRepository _coderRepository;
-        public string Error = "Server Error: The request has not been resolve";
         public CodersController(ICoderRepository coderRepository)
         {
             _coderRepository = coderRepository;
@@ -17,7 +13,7 @@ namespace RiwiTalent.App.Controllers
 
         //get all coders
         [HttpGet]
-        [Route("RiwiTalent/CoderList")]
+        [Route("riwitalent/coders")]
         public async Task<IActionResult> Get()
         {
             if(!ModelState.IsValid)
@@ -30,19 +26,20 @@ namespace RiwiTalent.App.Controllers
                 var coders = await _coderRepository.GetCoders();
                 return Ok(coders);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
 
 
         //Get all coders pagination
         [HttpGet]
-        [Route("RiwiTalent/CoderList/page={page}")]
+        [Route("riwitalent/coders/page={page}")]
         public async Task<IActionResult> Get(int page = 1,int cantRegisters = 10)
         {
-
+            /*The main idea of this method, is when the user list all coders can watch for pagination*/
             try
             {
                 var coderPagination = await _coderRepository.GetCodersPagination(page, cantRegisters);
@@ -61,15 +58,16 @@ namespace RiwiTalent.App.Controllers
                     PageAfter = coderPagination.PageAfter
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
 
         //Get coder by id
         [HttpGet]
-        [Route("RiwiTalent/{id}/Coder")]
+        [Route("riwitalent/{id}/coder")]
         public async Task<IActionResult> GetCoderById(string id)
         {
             try
@@ -83,16 +81,16 @@ namespace RiwiTalent.App.Controllers
 
                 return Ok(coder);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
 
         //Get Coder by name
         [HttpGet]
-        [Route("RiwiTalent/{name}/Coders")]
+        [Route("riwitalent/{name}/coders")]
         public async Task<IActionResult> GetCoderByName(string name)
         {
             try
@@ -106,12 +104,13 @@ namespace RiwiTalent.App.Controllers
 
                 return Ok(coder);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
+
 
         //Get coder by stack tecnical
         [HttpGet]

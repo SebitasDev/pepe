@@ -1,6 +1,4 @@
-using System.Xml.Serialization;
 using FluentValidation;
-using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
 
 namespace RiwiTalent.Validators

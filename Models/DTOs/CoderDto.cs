@@ -19,7 +19,11 @@ namespace RiwiTalent.Models.DTOs
         public string? Email { get; set; }
         public string? Photo { get; set; }
         public int Age { get; set; }
-
         public string? Cv { get; set; }
+        public string? Status { get; set; }
+        public string? Stack { get; set; }
+        public StandarRiwi? StandarRiwi { get; set; }
+        public List<Skill>? Skills { get; set; }
+        public LanguageSkill? LanguageSkills { get; set; }
     }
 }

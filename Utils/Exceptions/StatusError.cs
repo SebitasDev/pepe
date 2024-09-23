@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 namespace RiwiTalent.Utils.Exceptions
@@ -32,14 +28,14 @@ namespace RiwiTalent.Utils.Exceptions
 
 
         //500
-        public static ProblemDetails CreateInternalServerError()
+        public static ProblemDetails CreateInternalServerError(Exception ex)
         {
             return new ProblemDetails
             {
                 Title = "Error 500 - Internal Server Error",
                 Status = StatusCodes.Status500InternalServerError,
-                Detail = "An unexpected error occurred on the server. Please try again later or contact support if the problem persists."
+                Detail = ex.Message
             };
         }
     }
-}
+}   

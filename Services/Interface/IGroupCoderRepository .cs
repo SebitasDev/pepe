@@ -1,12 +1,18 @@
+using MongoDB.Bson;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
+using RiwiTalent.Services.Repository;
 
 namespace RiwiTalent.Services.Interface
 {
     public interface IGroupCoderRepository 
     {
-        Task<IEnumerable<GruopCoder>> GetGroupCoders(); //we get all groups
-        void add(GruopCoder groupCoder);
+        Task<IEnumerable<GroupCoderDto>> GetGroupCoders();
+        (ObjectId, Guid) Add(GroupDto groupDto);
+        Task<KeyDto> SendToken(GruopCoder gruopCoder, string key);
+        Task<GroupInfoDto> GetGroupInfoById(string groupId);
         Task Update(GroupCoderDto groupCoderDto);
+        Task DeleteCoderGroup(string id);
+        Task<bool> GroupExistByName(string name);
     }
 }

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RiwiTalent.App.Controllers.Users
+namespace RiwiTalent.Models.DTOs
 {
-    public class UsersController
+    public class KeyDto
     {
-        
+        public string? Key { get; set; }
     }
 }

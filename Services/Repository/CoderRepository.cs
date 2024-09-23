@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using RiwiTalent.Infrastructure.Data;
 using RiwiTalent.Models;
 using RiwiTalent.Models.DTOs;
+using RiwiTalent.Models.Enums;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.Services.Repository
@@ -11,15 +12,17 @@ namespace RiwiTalent.Services.Repository
     public class CoderRepository : ICoderRepository
     {
         private readonly IMongoCollection<Coder> _mongoCollection;
+        private readonly IMongoCollection<GruopCoder> _mongoCollectionGroups;
         private readonly IMapper _mapper; 
         private string Error = "The coder not found";
         public CoderRepository(MongoDbContext context, IMapper mapper)
         {
             _mongoCollection = context.Coders;
+            _mongoCollectionGroups = context.GroupCoders;
             _mapper = mapper;
         }
 
-        public void add(Coder coder)
+        public void Add(Coder coder)
         {
             _mongoCollection.InsertOne(coder);
 
@@ -27,7 +30,7 @@ namespace RiwiTalent.Services.Repository
 
         public async Task<Coder> GetCoderId(string id)
         {
-            //In this section we get coders by id and we do a control of errors.
+            //In this method we get coders by id and we do a control of errors.
             try
             {
                 return await _mongoCollection.Find(Coders => Coders.Id == id).FirstOrDefaultAsync();
@@ -40,7 +43,7 @@ namespace RiwiTalent.Services.Repository
 
         public async Task<Coder> GetCoderName(string name)
         {
-            //In this section we get coders by name and we do a control of errors.
+            //In this method we get coders by name and we do a control of errors.
             try
             {
                 return await _mongoCollection.Find(Coders => Coders.FirstName == name).FirstOrDefaultAsync();
@@ -89,43 +92,43 @@ namespace RiwiTalent.Services.Repository
             var coderMap = _mapper.Map(coderDto, existCoder);
             var builder = Builders<Coder>.Filter;
             var filter = builder.Eq(coder => coder.Id, coderMap.Id);
-            /* var UpdateCoder = Builders<Coder>.Update
-                            .Set(c => c.FirstName, coder.FirstName)
-                            .Set(c => c.SecondName, coder.SecondName)
-                            .Set(c => c.FirstLastName, coder.FirstLastName)
-                            .Set(c => c.SecondLastName, coder.SecondLastName)
-                            .Set(c => c.Email, coder.Email)
-                            .Set(c => c.Photo, coder.Photo)
-                            .Set(c => c.Age, coder.Age)
-                            .Set(c => c.Cv, coder.Cv)
-                            .Set(c => c.Date_Update, DateTime.Now)
-                            .Set(c => c.Status, coder.Status)
-                            .Set(c => c.Stack, coder.Stack)
-                            .Set(c => c.Skills, coder.Skills)
-                            .Set(c => c.LanguageSkills, coder.LanguageSkills)
-                            .Set(c => c.GroupId, coder.GroupId);
 
-            _mongoCollection.UpdateOne(filter, UpdateCoder); */
+            await _mongoCollection.ReplaceOneAsync(filter, coderMap);
+        }  
 
-            await _mongoCollection.ReplaceOneAsync(filter, existCoder);
-        
+        public async Task UpdateCodersGroup(CoderGroupDto coderGroup)
+        {
+            await UpdateCodersProcess(coderGroup, Status.Grouped);
         }
 
-        public void delete(string id)
-        {             
-            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id); // Definimos el filtro para encontrar el coder por su Id            
-            var update = Builders<Coder>.Update.Set(c => c.Status, "Inactive");// Definimos la actualización que cambia el estado a "inactivo"            
-            _mongoCollection.UpdateOneAsync(filter, update);// Realizamos la actualización en la base de datos
+        public async Task UpdateCodersSelected(CoderGroupDto coderGroup)
+        {
+            await UpdateCodersProcess(coderGroup, Status.Selected);
+            var coders = await _mongoCollection.Find(x => x.GroupId == coderGroup.GruopId && x.Status == Status.Grouped.ToString())
+                .ToListAsync();
+
+            await UpdateCodersProcess(coders, Status.Active);
+        }
+
+        public void Delete(string id)
+        {
+            //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Active to Inactive
+
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);         
+            var update = Builders<Coder>.Update.Set(c => c.Status, Status.Inactive.ToString());            
+            _mongoCollection.UpdateOneAsync(filter, update);
         }
 
         public void ReactivateCoder(string id)
         {
+            //This Method is the reponsable of update status the coder, first we search by id and then it execute the change Inactive to Active
             
-            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);// Definimos un filtro para buscar el Coder por su Id            
-            var update = Builders<Coder>.Update.Set(c => c.Status, "Active"); // Definimos la actualización que cambia el estado a "Active"
-            _mongoCollection.UpdateOne(filter, update);// Realizamos la actualización en la base de datos de forma sincrónica
+            var filter = Builders<Coder>.Filter.Eq(c => c.Id, id);           
+            var update = Builders<Coder>.Update.Set(c => c.Status, Status.Active.ToString());
+            _mongoCollection.UpdateOne(filter, update);
         }
-
+        
+        
         public async Task<List<Coder>> GetCodersByStack(List<string> stack)
         {
             try
@@ -158,6 +161,82 @@ namespace RiwiTalent.Services.Repository
             {
                 
                 throw new ApplicationException("Ocurrió un error al obtener el coder", ex);
+                
+             }
+         }
+
+        private async Task UpdateCodersProcess(CoderGroupDto coderGroup, Status status)
+        {
+            List<string> coderIdList = coderGroup.CoderList;
+            for (int i = 0; i < coderIdList.Count; i++)
+            {
+                string coderId = coderIdList[i];
+                var existCoder = await _mongoCollection.Find(coder => coder.Id == coderId).FirstOrDefaultAsync();
+                
+                if(existCoder is null)
+                {
+                    throw new Exception($"{Error}");
+                }
+
+                // TASK: Se deberia de hacer un automapper
+                existCoder.GroupId = coderGroup.GruopId;
+                existCoder.Status = status.ToString();
+
+                // var coderMap = _mapper.Map(coderDto, existCoder);
+                var filter = Builders<Coder>.Filter.Eq(x => x.Id, coderId);
+                // var update = filter.Eq(coder => coder.Id, coderMap.Id);
+
+                await _mongoCollection.ReplaceOneAsync(filter, existCoder);
+            }
+        }
+
+        private async Task UpdateCodersProcess(List<Coder> coders, Status status)
+        {
+            for (int i = 0; i < coders.Count; i++)
+            {
+                Coder existCoder = coders[i];
+                // var existCoder = await _mongoCollection.Find(coder => coder.Id == coderId).FirstOrDefaultAsync();
+                
+                if(existCoder is null)
+                {
+                    throw new Exception($"{Error}");
+                }
+
+                // TASK: Se deberia de hacer un automapper
+                // existCoder.GroupId = "";
+                existCoder.Status = status.ToString();
+
+                // var coderMap = _mapper.Map(coderDto, existCoder);
+                var filter = Builders<Coder>.Filter.Eq(x => x.Id, existCoder.Id);
+                // var update = filter.Eq(coder => coder.Id, coderMap.Id);
+
+                await _mongoCollection.ReplaceOneAsync(filter, existCoder);
+            }
+
+        }
+
+        public async Task<IEnumerable<Coder>> GetCodersByGroup(string name)
+        {
+            try
+            {
+                // first we get the name
+                var group = await _mongoCollectionGroups.Find(g => g.Name == name).FirstOrDefaultAsync();
+
+                if (group == null)
+                {
+                    throw new ApplicationException($"El grupo con el nombre '{name}' no existe.");
+                }
+
+                // then we compare the coder group id with the group id
+                var filter = Builders<Coder>.Filter.Eq(c => c.GroupId, group.Id.ToString());
+
+                var codersList = await _mongoCollection.Find(filter).ToListAsync();
+
+                return codersList;
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error al obtener los coders del grupo '{name}'", ex);
             }
         }
     }

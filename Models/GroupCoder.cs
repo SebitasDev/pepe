@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using RiwiTalent.Models.DTOs;
 
 namespace RiwiTalent.Models
 {
@@ -7,10 +8,14 @@ namespace RiwiTalent.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id { get; set; }
+        public ObjectId Id { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
+        public string? Status { get; set; }
         public DateTime Created_At { get; set; }
-        public List<ExternalKey> ExternalKeys { get; set; } = new List<ExternalKey>();
+        public string? UUID { get; set; }
+        public List<Coder>? Coders { get; set; }
+
+        public List<ExternalKey>? ExternalKeys { get; set; }
     }
 }

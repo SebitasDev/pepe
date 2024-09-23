@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using RiwiTalent.Models;
-using RiwiTalent.Models.DTOs;
 using RiwiTalent.Services.Interface;
 
 namespace RiwiTalent.App.Controllers.Coders
@@ -10,7 +9,6 @@ namespace RiwiTalent.App.Controllers.Coders
     {
         private readonly ICoderRepository _coderRepository;
         private readonly IValidator<Coder> _coderValidator;
-        public string Error = "Server Error: The request has not been resolve";
         public CoderCreateController(ICoderRepository coderRepository, IValidator<Coder> coderValidator)
         {
             _coderRepository = coderRepository;
@@ -19,7 +17,7 @@ namespace RiwiTalent.App.Controllers.Coders
 
         //Endpoint
         [HttpPost]
-        [Route("RiwiTalent/CreateCoders")]
+        [Route("riwitalent/createcoders")]
         public IActionResult Post([FromBody] Coder coder)
         {
 
@@ -29,6 +27,8 @@ namespace RiwiTalent.App.Controllers.Coders
                 return BadRequest(Utils.Exceptions.StatusError.CreateBadRequest());
             }
 
+
+            //validations with FluentValidation
             var ValidationResult = _coderValidator.Validate(coder);
 
             if(!ValidationResult.IsValid)
@@ -38,12 +38,13 @@ namespace RiwiTalent.App.Controllers.Coders
 
             try
             {
-                _coderRepository.add(coder);
+                _coderRepository.Add(coder);
                 return Ok("The coder has been created successfully");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new Exception(Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                throw;
             }
         }
 
